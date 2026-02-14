@@ -68,82 +68,86 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 
 ---
 
-## Phase 2: Data Layer - Storage & Encryption
+## Phase 2: Data Layer - Storage & Encryption ✅
 
 **Goal**: Implement IndexedDB storage with encryption at rest
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Install testing infrastructure: `vitest`, `@vue/test-utils`, `jsdom` (this setup carries forward to all subsequent phases)
-   - Configure `vitest.config.ts` with jsdom environment
-   - Create test files:
-     - `src/__tests__/crypto.test.ts` — test `deriveKey`, `encrypt`, `decrypt` functions
-     - `src/__tests__/db-schema.test.ts` — test Dexie database schema creation and table existence
-     - `src/__tests__/stores/auth.test.ts` — test master password flow (set password, derive key, lock/unlock)
-     - `src/__tests__/stores/data.test.ts` — test CRUD operations for all 7 data domains
-     - `src/__tests__/types/data-models.test.ts` — test TypeScript interfaces compile correctly with valid/invalid data
-   - Key test cases:
-     - `deriveKey` produces a CryptoKey from password + salt
-     - `encrypt` → `decrypt` round-trip returns original data
-     - Decryption with wrong password throws an error
-     - Each of the 7 domain tables exists in the Dexie schema
-     - CRUD: create entry → read it back → update it → delete it
-     - Entries have UUID and timestamp fields auto-populated
-     - Validation rejects entries with missing required fields
-     - Validation rejects out-of-range values (e.g. focus_rating > 5)
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Install testing infrastructure: `vitest`, `@vue/test-utils`, `jsdom` (this setup carries forward to all subsequent phases)~~
+   - ~~Configure `vitest.config.ts` with jsdom environment~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/crypto.test.ts` — test `deriveKey`, `encrypt`, `decrypt` functions~~
+     - ~~`src/__tests__/db-schema.test.ts` — test Dexie database schema creation and table existence~~
+     - ~~`src/__tests__/stores/auth.test.ts` — test master password flow (set password, derive key, lock/unlock)~~
+     - ~~`src/__tests__/stores/data.test.ts` — test CRUD operations for all 7 data domains~~
+     - ~~`src/__tests__/types/data-models.test.ts` — test TypeScript interfaces compile correctly with valid/invalid data~~
+   - ~~Key test cases:~~
+     - ~~`deriveKey` produces a CryptoKey from password + salt~~
+     - ~~`encrypt` → `decrypt` round-trip returns original data~~
+     - ~~Decryption with wrong password throws an error~~
+     - ~~Each of the 7 domain tables exists in the Dexie schema~~
+     - ~~CRUD: create entry → read it back → update it → delete it~~
+     - ~~Entries have UUID and timestamp fields auto-populated~~
+     - ~~Validation rejects entries with missing required fields~~
+     - ~~Validation rejects out-of-range values (e.g. focus_rating > 5)~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Set up IndexedDB with Dexie.js**
-   - Install `dexie` and `dexie-export-import`
-   - Create database schema for all data domains:
-     - `productivity_logs` (tasks, focus sessions)
-     - `finance_logs` (net worth, spending by category)
-     - `health_logs` (Fitbit metrics: HR, HRV, sleep)
-     - `metabolic_logs` (Zoe scores, food data)
-     - `digital_logs` (screen time, app usage)
-     - `mindfulness_logs` (meditation duration, quality)
-     - `reading_logs` (pages, highlights)
-   - Add timestamp and UUID to all entries
+1. ~~**Set up IndexedDB with Dexie.js**~~
+   - ~~Install `dexie` and `dexie-export-import`~~
+   - ~~Create database schema for all data domains:~~
+     - ~~`productivity_logs` (tasks, focus sessions)~~
+     - ~~`finance_logs` (net worth, spending by category)~~
+     - ~~`health_logs` (Fitbit metrics: HR, HRV, sleep)~~
+     - ~~`metabolic_logs` (Zoe scores, food data)~~
+     - ~~`digital_logs` (screen time, app usage)~~
+     - ~~`mindfulness_logs` (meditation duration, quality)~~
+     - ~~`reading_logs` (pages, highlights)~~
+   - ~~Add timestamp and UUID to all entries~~
 
-2. **Implement Web Crypto API encryption**
-   - Create encryption utility functions:
-     - `deriveKey(password, salt)` using PBKDF2 (600,000 iterations)
-     - `encrypt(data, key)` using AES-GCM
-     - `decrypt(encryptedData, key)` using AES-GCM
-   - Store encrypted data in IndexedDB
-   - Handle salt generation and storage
+2. ~~**Implement Web Crypto API encryption**~~
+   - ~~Create encryption utility functions:~~
+     - ~~`deriveKey(password, salt)` using PBKDF2 (600,000 iterations)~~
+     - ~~`encrypt(data, key)` using AES-GCM~~
+     - ~~`decrypt(encryptedData, key)` using AES-GCM~~
+   - ~~Store encrypted data in IndexedDB~~
+   - ~~Handle salt generation and storage~~
 
-3. **Create Pinia stores for data management**
-   - `useAuthStore` - master password management, key derivation
-   - `useDataStore` - CRUD operations for all data domains
-   - `useStorageStore` - IndexedDB interaction layer
-   - Implement reactive queries for UI updates
+3. ~~**Create Pinia stores for data management**~~
+   - ~~`useAuthStore` - master password management, key derivation~~
+   - ~~`useDataStore` - CRUD operations for all data domains~~
+   - ~~`useStorageStore` - IndexedDB interaction layer~~
+   - ~~Implement reactive queries for UI updates~~
 
-4. **Add data validation schemas**
-   - Create TypeScript interfaces for each data domain
-   - Add validation rules (required fields, data types, ranges)
-   - Implement error handling for storage operations
+4. ~~**Add data validation schemas**~~
+   - ~~Create TypeScript interfaces for each data domain~~
+   - ~~Add validation rules (required fields, data types, ranges)~~
+   - ~~Implement error handling for storage operations~~
 
-5. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+5. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS** (80 tests passing)~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Can save encrypted data to IndexedDB
-- Data persists after browser refresh
-- Can decrypt and read data with correct password
-- Cannot access data without password
-- Browser DevTools shows encrypted blobs in IndexedDB
+### ~~Verification~~:
+- ~~Can save encrypted data to IndexedDB~~
+- ~~Data persists after browser refresh~~
+- ~~Can decrypt and read data with correct password~~
+- ~~Cannot access data without password~~
+- ~~Browser DevTools shows encrypted blobs in IndexedDB~~
 
-**Files to create**:
-- `vitest.config.ts` - Vitest configuration
-- `src/__tests__/crypto.test.ts`, `src/__tests__/db-schema.test.ts`
-- `src/__tests__/stores/auth.test.ts`, `src/__tests__/stores/data.test.ts`
-- `src/db/schema.ts` - Dexie database definition
-- `src/utils/crypto.ts` - encryption utilities
-- `src/stores/auth.ts`, `src/stores/data.ts`, `src/stores/storage.ts`
-- `src/types/data-models.ts` - TypeScript interfaces
+~~**Files created**~~:
+- ~~`vitest.config.ts` - Vitest configuration~~
+- ~~`src/__tests__/setup.ts` - Test setup (fake-indexeddb, Web Crypto polyfill)~~
+- ~~`src/__tests__/crypto.test.ts`, `src/__tests__/db-schema.test.ts`~~
+- ~~`src/__tests__/stores/auth.test.ts`, `src/__tests__/stores/data.test.ts`~~
+- ~~`src/__tests__/types/data-models.test.ts`~~
+- ~~`src/db/schema.ts` - Dexie database definition~~
+- ~~`src/utils/crypto.ts` - encryption utilities~~
+- ~~`src/stores/auth.ts`, `src/stores/data.ts`, `src/stores/storage.ts`~~
+- ~~`src/types/data-models.ts` - TypeScript interfaces & validators~~
 
 ---
 
@@ -704,7 +708,7 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 
 **Start with Phases 1-4** to get a functional MVP:
 1. ✅ Phase 1: Core infrastructure (PWA works) — **DONE**
-2. Phase 2: Data storage (can save/load data)
+2. ✅ Phase 2: Data storage (can save/load data) — **DONE**
 3. Phase 3: UI foundation (looks good)
 4. Phase 4: Manual entry (can track life)
 
@@ -801,7 +805,7 @@ life-tracking/
 
 **Per Phase Testing**:
 - Phase 1: ~~Install PWA, work offline, navigate routes~~ ✅
-- Phase 2: Crypto round-trip, Dexie CRUD, store operations, validation
+- Phase 2: ~~Crypto round-trip, Dexie CRUD, store operations, validation~~ ✅ (80 tests)
 - Phase 3: Component rendering, theme toggle, responsive layout
 - Phase 4: Form rendering, validation, submission, edit/delete
 - Phase 5: Chart rendering, metric display, time range filtering
@@ -858,7 +862,7 @@ life-tracking/
 Each phase can be implemented in a single session with Claude Opus, with testing and iteration:
 
 - **Phase 1**: ~~1 session (~30-45 min) - Project scaffolding, PWA config~~ ✅ DONE
-- **Phase 2**: 1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing
+- **Phase 2**: ~~1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing~~ ✅ DONE
 - **Phase 3**: 1 session (~30-45 min) - Layout components, theme system
 - **Phase 4**: 2-3 sessions (~90-120 min) - All 7 forms with validation
 - **Phase 5**: 2 sessions (~60-90 min) - Chart integration, multiple chart types
@@ -877,7 +881,7 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 ## Success Criteria
 
 ✅ **Phase 1**: Can install PWA and navigate offline — **DONE**
-- **Phase 2**: Data persists encrypted across sessions
+✅ **Phase 2**: Data persists encrypted across sessions — **DONE**
 - **Phase 3**: UI is responsive and accessible
 - **Phase 4**: Can log data for all 7 domains
 - **Phase 5**: Can visualize trends with charts
