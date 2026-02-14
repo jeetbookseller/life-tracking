@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment (keep .env, ignore local overrides)
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# PWA dev artifacts
+dev-dist/
