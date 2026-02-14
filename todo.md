@@ -6,58 +6,65 @@ This plan implements a local-first, offline-capable Progressive Web App (PWA) fo
 
 The implementation is broken into 9 phases, each deliverable and testable independently, allowing incremental development without overwhelming scope.
 
+**Testing approach**: Every phase follows a TDD (Test-Driven Development) workflow — write tests first, confirm they fail (red), implement the feature, then confirm tests pass (green). The project uses **Vitest** for unit/integration tests and **@vue/test-utils** for component tests.
+
 ---
 
 ## Technology Stack (from architectural document)
 
-- **Frontend Framework**: Vue 3 with Vite (or Svelte as alternative)
+- **Frontend Framework**: Vue 3 with Vite
 - **PWA Support**: vite-plugin-pwa
-- **State Management**: Pinia (Vue) or Zustand (React/Svelte)
+- **State Management**: Pinia
 - **Storage**: IndexedDB via Dexie.js
 - **Encryption**: Web Crypto API (AES-GCM with PBKDF2)
 - **Charts**: Chart.js or ApexCharts
-- **Styling**: Modern CSS or Tailwind CSS
+- **Styling**: Modern CSS with CSS custom properties
+- **Testing**: Vitest + @vue/test-utils
 
 ---
 
-## Phase 1: Project Foundation & Core Infrastructure
+## Phase 1: Project Foundation & Core Infrastructure ✅
 
 **Goal**: Set up development environment, framework, and PWA basics
 
+**Status**: COMPLETED
+
 ### Tasks:
-1. **Initialize project with Vite + Vue 3**
-   - Run `npm create vite@latest` and select Vue + TypeScript
-   - Install core dependencies: `vue`, `vue-router`, `pinia`
-   - Set up basic project structure: `/src/components`, `/src/views`, `/src/stores`, `/src/utils`
+1. ~~**Initialize project with Vite + Vue 3**~~
+   - ~~Run `npm create vite@latest` and select Vue + TypeScript~~
+   - ~~Install core dependencies: `vue`, `vue-router`, `pinia`~~
+   - ~~Set up basic project structure: `/src/components`, `/src/views`, `/src/stores`, `/src/utils`~~
 
-2. **Configure PWA support**
-   - Install `vite-plugin-pwa`
-   - Create `manifest.webmanifest` with app name, icons, theme colors
-   - Configure service worker for offline-first caching
-   - Test PWA installation on mobile and desktop
+2. ~~**Configure PWA support**~~
+   - ~~Install `vite-plugin-pwa`~~
+   - ~~Create `manifest.webmanifest` with app name, icons, theme colors~~
+   - ~~Configure service worker for offline-first caching~~
+   - ~~Test PWA installation on mobile and desktop~~
 
-3. **Set up routing structure**
-   - Create routes: `/dashboard`, `/entry`, `/insights`, `/settings`
-   - Implement basic navigation layout with sidebar/bottom nav
-   - Add route guards for future authentication
+3. ~~**Set up routing structure**~~
+   - ~~Create routes: `/dashboard`, `/entry`, `/insights`, `/settings`~~
+   - ~~Implement basic navigation layout with sidebar/bottom nav~~
+   - ~~Add route guards for future authentication~~
 
-4. **Configure build and dev environment**
-   - Set up TypeScript strict mode
-   - Add ESLint and Prettier
-   - Create development and production build scripts
-   - Add `.env` support for future API keys
+4. ~~**Configure build and dev environment**~~
+   - ~~Set up TypeScript strict mode~~
+   - ~~Add ESLint and Prettier~~
+   - ~~Create development and production build scripts~~
+   - ~~Add `.env` support for future API keys~~
 
-### Verification:
-- App loads in browser
-- Can install as PWA (Add to Home Screen)
-- Works offline after initial load
-- Navigation between routes works smoothly
+### ~~Verification~~:
+- ~~App loads in browser~~
+- ~~Can install as PWA (Add to Home Screen)~~
+- ~~Works offline after initial load~~
+- ~~Navigation between routes works smoothly~~
 
-**Files to create**:
-- `package.json`, `vite.config.ts`, `tsconfig.json`
-- `src/main.ts`, `src/App.vue`, `src/router/index.ts`
-- `public/manifest.webmanifest`, `public/icons/`
-- `src/views/Dashboard.vue`, `src/views/Entry.vue`, `src/views/Insights.vue`, `src/views/Settings.vue`
+~~**Files created**~~:
+- ~~`package.json`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`~~
+- ~~`src/main.ts`, `src/App.vue`, `src/router/index.ts`, `src/env.d.ts`~~
+- ~~`public/manifest.webmanifest`, `public/icons/`, `public/vite.svg`~~
+- ~~`src/views/Dashboard.vue`, `src/views/Entry.vue`, `src/views/Insights.vue`, `src/views/Settings.vue`~~
+- ~~`src/styles/variables.css`~~
+- ~~`eslint.config.js`, `.prettierrc`, `.gitignore`, `.env`~~
 
 ---
 
@@ -66,6 +73,26 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Implement IndexedDB storage with encryption at rest
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Install testing infrastructure: `vitest`, `@vue/test-utils`, `jsdom` (this setup carries forward to all subsequent phases)
+   - Configure `vitest.config.ts` with jsdom environment
+   - Create test files:
+     - `src/__tests__/crypto.test.ts` — test `deriveKey`, `encrypt`, `decrypt` functions
+     - `src/__tests__/db-schema.test.ts` — test Dexie database schema creation and table existence
+     - `src/__tests__/stores/auth.test.ts` — test master password flow (set password, derive key, lock/unlock)
+     - `src/__tests__/stores/data.test.ts` — test CRUD operations for all 7 data domains
+     - `src/__tests__/types/data-models.test.ts` — test TypeScript interfaces compile correctly with valid/invalid data
+   - Key test cases:
+     - `deriveKey` produces a CryptoKey from password + salt
+     - `encrypt` → `decrypt` round-trip returns original data
+     - Decryption with wrong password throws an error
+     - Each of the 7 domain tables exists in the Dexie schema
+     - CRUD: create entry → read it back → update it → delete it
+     - Entries have UUID and timestamp fields auto-populated
+     - Validation rejects entries with missing required fields
+     - Validation rejects out-of-range values (e.g. focus_rating > 5)
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Set up IndexedDB with Dexie.js**
    - Install `dexie` and `dexie-export-import`
    - Create database schema for all data domains:
@@ -97,6 +124,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Add validation rules (required fields, data types, ranges)
    - Implement error handling for storage operations
 
+5. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Can save encrypted data to IndexedDB
 - Data persists after browser refresh
@@ -105,6 +137,9 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Browser DevTools shows encrypted blobs in IndexedDB
 
 **Files to create**:
+- `vitest.config.ts` - Vitest configuration
+- `src/__tests__/crypto.test.ts`, `src/__tests__/db-schema.test.ts`
+- `src/__tests__/stores/auth.test.ts`, `src/__tests__/stores/data.test.ts`
 - `src/db/schema.ts` - Dexie database definition
 - `src/utils/crypto.ts` - encryption utilities
 - `src/stores/auth.ts`, `src/stores/data.ts`, `src/stores/storage.ts`
@@ -117,6 +152,24 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Build responsive layout and design system
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/components/layout.test.ts` — test AppHeader, AppSidebar, AppBottomNav, AppLayout render correctly
+     - `src/__tests__/composables/useTheme.test.ts` — test theme toggle, persistence, and CSS class application
+     - `src/__tests__/components/ui.test.ts` — test Card, Button, Input, Modal component rendering and props
+   - Key test cases:
+     - AppLayout renders header on all screen sizes
+     - AppSidebar renders nav links for desktop
+     - AppBottomNav renders nav items for mobile
+     - Theme defaults to dark mode
+     - Theme toggle switches between light and dark
+     - Theme preference persists to localStorage
+     - Card component renders slot content
+     - Button component emits click events and renders variants (primary/secondary)
+     - Input component binds v-model correctly
+     - Modal opens and closes, emits close event
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Create base layout components**
    - `AppHeader.vue` - top navigation/branding
    - `AppSidebar.vue` - desktop navigation
@@ -142,6 +195,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Add whitespace and visual hierarchy
    - Test on mobile (375px) to desktop (1920px)
 
+5. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Layout adapts smoothly from mobile to desktop
 - Theme toggle works and persists across sessions
@@ -149,9 +207,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - All components render correctly in isolation
 
 **Files to create**:
+- `src/__tests__/components/layout.test.ts`, `src/__tests__/components/ui.test.ts`
+- `src/__tests__/composables/useTheme.test.ts`
 - `src/components/layout/AppHeader.vue`, `AppSidebar.vue`, `AppBottomNav.vue`, `AppLayout.vue`
 - `src/components/ui/Card.vue`, `Button.vue`, `Input.vue`, `Modal.vue`, etc.
-- `src/styles/variables.css`, `src/styles/themes.css`
+- `src/styles/themes.css`
 - `src/composables/useTheme.ts`
 
 ---
@@ -161,6 +221,28 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Build data entry forms for all 7 tracking domains
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/components/forms/ProductivityForm.test.ts`
+     - `src/__tests__/components/forms/FinanceForm.test.ts`
+     - `src/__tests__/components/forms/HealthForm.test.ts`
+     - `src/__tests__/components/forms/MetabolicForm.test.ts`
+     - `src/__tests__/components/forms/DigitalForm.test.ts`
+     - `src/__tests__/components/forms/MindfulnessForm.test.ts`
+     - `src/__tests__/components/forms/ReadingForm.test.ts`
+     - `src/__tests__/views/Entry.test.ts` — test unified entry view
+   - Key test cases:
+     - Each form renders all required fields
+     - Form submission emits save event with correct data shape
+     - Validation prevents submitting with missing required fields
+     - Validation rejects out-of-range values (e.g. focus_rating 0 or 6)
+     - Date field defaults to today
+     - Finance form auto-calculates net worth (assets - liabilities)
+     - Entry view renders tab/selector for all 7 domains
+     - Can switch between domain forms
+     - Edit mode populates form with existing entry data
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Create productivity entry form**
    - Fields: date, tasks planned, tasks completed, focus rating (1-5), deep work hours
    - Add quick-entry shortcuts
@@ -197,6 +279,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - "Copy from yesterday" functionality
    - Bulk import support (future)
 
+9. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Can enter data for all 7 domains
 - Form validation prevents invalid entries
@@ -205,6 +292,8 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Mobile-friendly input (number pads, date pickers)
 
 **Files to create**:
+- `src/__tests__/components/forms/*.test.ts` (7 form test files)
+- `src/__tests__/views/Entry.test.ts`
 - `src/components/forms/ProductivityForm.vue`
 - `src/components/forms/FinanceForm.vue`
 - `src/components/forms/HealthForm.vue`
@@ -221,6 +310,25 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Display historical data with charts and trend analysis
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/components/charts.test.ts` — test chart wrapper components render with data
+     - `src/__tests__/components/metrics.test.ts` — test MetricCard, DeltaIndicator, StreakCounter
+     - `src/__tests__/views/Dashboard.test.ts` — test dashboard renders metric cards and charts
+     - `src/__tests__/utils/chartConfig.test.ts` — test chart configuration helpers
+   - Key test cases:
+     - LineChart renders canvas element when given data points
+     - BarChart renders with correct number of bars
+     - PieChart renders with category data
+     - MetricCard displays label, value, and unit
+     - DeltaIndicator shows positive (green/↑) and negative (red/↓) changes
+     - StreakCounter displays current streak count
+     - Time range selector defaults to "Last 7 days"
+     - Changing time range updates chart data
+     - Dashboard renders one metric card per domain
+     - Charts handle empty data gracefully (no crash)
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Install and configure charting library**
    - Install Chart.js (lightweight) or ApexCharts (feature-rich)
    - Create chart wrapper components for consistency
@@ -251,6 +359,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Click to drill down into specific dates
    - Export chart as image (future)
 
+6. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - All charts render with sample data
 - Charts update when new data is entered
@@ -259,6 +372,8 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Performance is smooth even with 1000+ data points
 
 **Files to create**:
+- `src/__tests__/components/charts.test.ts`, `src/__tests__/components/metrics.test.ts`
+- `src/__tests__/views/Dashboard.test.ts`, `src/__tests__/utils/chartConfig.test.ts`
 - `src/components/charts/LineChart.vue`, `BarChart.vue`, `PieChart.vue`, `HeatmapChart.vue`
 - `src/components/metrics/MetricCard.vue`, `DeltaIndicator.vue`, `StreakCounter.vue`
 - `src/views/Dashboard.vue` - main visualization view
@@ -271,6 +386,27 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Calculate daily, weekly, and monthly summaries for performance
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/utils/aggregation.test.ts` — test summary calculation functions
+     - `src/__tests__/utils/trends.test.ts` — test trend detection algorithms
+     - `src/__tests__/stores/insights.test.ts` — test insights store state management
+     - `src/__tests__/views/Insights.test.ts` — test insights view rendering
+     - `src/__tests__/components/insights.test.ts` — test ComparisonCard, AnomalyAlert, GoalProgress
+   - Key test cases:
+     - Daily summary correctly sums/averages values for a given day
+     - Weekly rollup aggregates 7 days of data
+     - Monthly summary calculates delta % from previous month
+     - Moving average (7-day) calculates correctly with sample data
+     - Moving average (30-day) handles fewer than 30 data points
+     - Anomaly detection flags values >2 std deviations from mean
+     - Streak detection counts consecutive days meeting a threshold
+     - Significant change detection flags >15% week-over-week delta
+     - ComparisonCard renders "this week" vs "last week" values
+     - AnomalyAlert renders when anomalies are present, hides when none
+     - GoalProgress shows correct percentage toward target
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Create aggregation utilities**
    - Daily summaries (sum, average, median calculations)
    - Weekly rollups (totals, averages, min/max)
@@ -300,6 +436,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Visual progress indicators
    - Streak tracking for consistency goals
 
+6. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Summaries calculate correctly for all time ranges
 - Summaries update when data changes
@@ -308,6 +449,9 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Performance remains fast with large datasets
 
 **Files to create**:
+- `src/__tests__/utils/aggregation.test.ts`, `src/__tests__/utils/trends.test.ts`
+- `src/__tests__/stores/insights.test.ts`, `src/__tests__/views/Insights.test.ts`
+- `src/__tests__/components/insights.test.ts`
 - `src/utils/aggregation.ts` - calculation functions
 - `src/utils/trends.ts` - trend detection algorithms
 - `src/stores/insights.ts` - insights state management
@@ -321,6 +465,25 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Export data in LLM-optimized format for AI analysis
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/utils/export.test.ts` — test export format generators
+     - `src/__tests__/components/export.test.ts` — test ExportModal and PromptLibrary components
+     - `src/__tests__/views/Export.test.ts` — test export view rendering
+   - Key test cases:
+     - Markdown-KV export produces valid markdown with `Day: {Metric: Value}` format
+     - Export includes metadata header (date range, units)
+     - Export marks anomalies with markers
+     - Export filters by selected domains
+     - Export filters by date range
+     - JSON export produces valid parseable JSON
+     - CSV export produces valid CSV with headers
+     - ExportModal renders domain selector and date range picker
+     - Copy-to-clipboard button copies exported text
+     - PromptLibrary renders pre-written prompt suggestions
+     - Empty data produces meaningful "no data" export (not crash)
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Implement Markdown-KV export format**
    - Create export utility that generates structured markdown
    - Format: `Day: {Metric: Value, Metric: Value}`
@@ -351,6 +514,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - CSV export for spreadsheet analysis
    - Markdown table format for GitHub/Notion
 
+6. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Export generates valid markdown that LLMs can parse
 - All selected data domains are included
@@ -359,6 +527,8 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Exported data accurately represents stored data
 
 **Files to create**:
+- `src/__tests__/utils/export.test.ts`
+- `src/__tests__/components/export.test.ts`, `src/__tests__/views/Export.test.ts`
 - `src/utils/export.ts` - export format generators
 - `src/components/export/ExportModal.vue`
 - `src/components/export/PromptLibrary.vue`
@@ -371,6 +541,27 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Implement encrypted cloud backup via Google Drive
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/services/googleDrive.test.ts` — test Drive API wrapper (mocked)
+     - `src/__tests__/services/backup.test.ts` — test backup/restore logic
+     - `src/__tests__/stores/sync.test.ts` — test sync state management
+     - `src/__tests__/components/settings/BackupSettings.test.ts` — test backup UI
+   - Key test cases:
+     - Google OAuth flow initiates correctly (redirect URL formed)
+     - Token storage encrypts tokens before saving
+     - Token refresh logic detects expired tokens
+     - Backup serializes entire IndexedDB to JSON
+     - Backup encrypts JSON with master key before upload
+     - Restore decrypts downloaded backup
+     - Restore populates IndexedDB from decrypted JSON
+     - Sync status updates: idle → syncing → synced / failed
+     - BackupSettings shows last backup timestamp
+     - BackupSettings shows sync status indicator
+     - Offline queue stores pending backups
+     - Auto-sync triggers when online event fires
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Set up Google Drive API integration**
    - Create Google Cloud project
    - Enable Google Drive API
@@ -401,6 +592,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Auto-sync when connection restored
    - Show sync errors gracefully
 
+6. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Can authenticate with Google account
 - Backup file appears in Drive's appDataFolder
@@ -409,6 +605,8 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Sync works across browser sessions
 
 **Files to create**:
+- `src/__tests__/services/googleDrive.test.ts`, `src/__tests__/services/backup.test.ts`
+- `src/__tests__/stores/sync.test.ts`, `src/__tests__/components/settings/BackupSettings.test.ts`
 - `src/services/googleDrive.ts` - Drive API wrapper
 - `src/services/backup.ts` - backup/restore logic
 - `src/components/settings/BackupSettings.vue`
@@ -421,6 +619,28 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Goal**: Replace manual entry with automated API fetching where possible
 
 ### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/services/fitbit.test.ts` — test Fitbit API client (mocked)
+     - `src/__tests__/services/dataSync.test.ts` — test unified sync orchestrator
+     - `src/__tests__/utils/apiMappers.test.ts` — test API-to-schema transformers
+     - `src/__tests__/stores/apiAuth.test.ts` — test API authentication state
+     - `src/__tests__/components/settings/ApiConnections.test.ts` — test API settings UI
+   - Key test cases:
+     - Fitbit OAuth flow initiates correctly
+     - Fitbit API response maps to internal health_logs schema
+     - API mapper handles missing/null fields gracefully
+     - API mapper rejects malformed API responses
+     - Data sync merges API data with existing manual entries
+     - Manual entries take priority over API data for same date
+     - Scheduled fetch triggers at configured interval
+     - Retry logic retries failed fetches with backoff
+     - Rate limit handling pauses fetches when limit hit
+     - ApiConnections shows connect/disconnect buttons per API
+     - ApiConnections shows last sync time per API
+     - Disconnecting API removes stored tokens
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
 1. **Implement Fitbit API integration**
    - Set up Fitbit OAuth 2.0 flow
    - Fetch daily summaries (HR, HRV, sleep, steps)
@@ -456,6 +676,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
    - Monarch Money (unofficial API wrapper)
    - Android Digital Wellbeing (via ADB bridge - advanced)
 
+7. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
 ### Verification:
 - Can authenticate with Fitbit
 - Daily data fetches automatically
@@ -464,6 +689,9 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 - Can disconnect APIs and revert to manual entry
 
 **Files to create**:
+- `src/__tests__/services/fitbit.test.ts`, `src/__tests__/services/dataSync.test.ts`
+- `src/__tests__/utils/apiMappers.test.ts`, `src/__tests__/stores/apiAuth.test.ts`
+- `src/__tests__/components/settings/ApiConnections.test.ts`
 - `src/services/fitbit.ts` - Fitbit API client
 - `src/services/dataSync.ts` - unified sync orchestrator
 - `src/utils/apiMappers.ts` - API-to-schema transformers
@@ -475,19 +703,19 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 ## Implementation Order Recommendation
 
 **Start with Phases 1-4** to get a functional MVP:
-1. ✅ Phase 1: Core infrastructure (PWA works)
-2. ✅ Phase 2: Data storage (can save/load data)
-3. ✅ Phase 3: UI foundation (looks good)
-4. ✅ Phase 4: Manual entry (can track life)
+1. ✅ Phase 1: Core infrastructure (PWA works) — **DONE**
+2. Phase 2: Data storage (can save/load data)
+3. Phase 3: UI foundation (looks good)
+4. Phase 4: Manual entry (can track life)
 
 **Then add value with Phases 5-7**:
-5. ✅ Phase 5: Visualizations (see trends)
-6. ✅ Phase 6: Insights (learn from data)
-7. ✅ Phase 7: LLM export (AI analysis)
+5. Phase 5: Visualizations (see trends)
+6. Phase 6: Insights (learn from data)
+7. Phase 7: LLM export (AI analysis)
 
 **Finally, add convenience with Phases 8-9**:
-8. ✅ Phase 8: Cloud backup (data safety)
-9. ✅ Phase 9: API automation (reduce manual work)
+8. Phase 8: Cloud backup (data safety)
+9. Phase 9: API automation (reduce manual work)
 
 ---
 
@@ -541,9 +769,18 @@ life-tracking/
 │   │   └── apiMappers.ts
 │   ├── types/
 │   │   └── data-models.ts
-│   └── styles/
-│       ├── variables.css
-│       └── themes.css
+│   ├── styles/
+│   │   ├── variables.css
+│   │   └── themes.css
+│   └── __tests__/
+│       ├── crypto.test.ts
+│       ├── db-schema.test.ts
+│       ├── stores/
+│       ├── components/
+│       ├── views/
+│       ├── utils/
+│       └── services/
+├── vitest.config.ts
 ├── package.json
 ├── vite.config.ts
 └── tsconfig.json
@@ -553,16 +790,25 @@ life-tracking/
 
 ## Testing Strategy
 
+**Framework**: Vitest (unit/integration) + @vue/test-utils (component tests)
+
+**TDD workflow per phase**:
+1. Write test cases targeting the phase's verification criteria
+2. Run `npx vitest run` — confirm all new tests **FAIL** (red)
+3. Implement the feature code
+4. Run `npx vitest run` — confirm all tests **PASS** (green)
+5. Refactor if needed, keeping tests green
+
 **Per Phase Testing**:
-- Phase 1: Install PWA, work offline, navigate routes
-- Phase 2: Save/load encrypted data, verify encryption in DevTools
-- Phase 3: Responsive design testing, theme switching
-- Phase 4: Submit all forms, validate data, edit/delete entries
-- Phase 5: Render charts with sample data, test responsiveness
-- Phase 6: Verify summary calculations, check trend detection
-- Phase 7: Export data, paste into ChatGPT, verify format
-- Phase 8: Backup to Drive, restore on new browser profile
-- Phase 9: Connect Fitbit, verify automatic data fetch
+- Phase 1: ~~Install PWA, work offline, navigate routes~~ ✅
+- Phase 2: Crypto round-trip, Dexie CRUD, store operations, validation
+- Phase 3: Component rendering, theme toggle, responsive layout
+- Phase 4: Form rendering, validation, submission, edit/delete
+- Phase 5: Chart rendering, metric display, time range filtering
+- Phase 6: Aggregation math, trend detection, anomaly flagging
+- Phase 7: Export format generation, clipboard copy, template rendering
+- Phase 8: OAuth flow (mocked), backup/restore round-trip, sync status
+- Phase 9: API mapping, data merge priority, scheduled fetch, retry logic
 
 **End-to-End Testing**:
 1. Fresh install → Set password → Enter week of data
@@ -611,7 +857,7 @@ life-tracking/
 
 Each phase can be implemented in a single session with Claude Opus, with testing and iteration:
 
-- **Phase 1**: 1 session (~30-45 min) - Project scaffolding, PWA config
+- **Phase 1**: ~~1 session (~30-45 min) - Project scaffolding, PWA config~~ ✅ DONE
 - **Phase 2**: 1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing
 - **Phase 3**: 1 session (~30-45 min) - Layout components, theme system
 - **Phase 4**: 2-3 sessions (~90-120 min) - All 7 forms with validation
@@ -630,14 +876,14 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 
 ## Success Criteria
 
-✅ **Phase 1**: Can install PWA and navigate offline
-✅ **Phase 2**: Data persists encrypted across sessions
-✅ **Phase 3**: UI is responsive and accessible
-✅ **Phase 4**: Can log data for all 7 domains
-✅ **Phase 5**: Can visualize trends with charts
-✅ **Phase 6**: Insights surface meaningful patterns
-✅ **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude)
-✅ **Phase 8**: Backup/restore via Google Drive works
-✅ **Phase 9**: Fitbit data syncs automatically
+✅ **Phase 1**: Can install PWA and navigate offline — **DONE**
+- **Phase 2**: Data persists encrypted across sessions
+- **Phase 3**: UI is responsive and accessible
+- **Phase 4**: Can log data for all 7 domains
+- **Phase 5**: Can visualize trends with charts
+- **Phase 6**: Insights surface meaningful patterns
+- **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude)
+- **Phase 8**: Backup/restore via Google Drive works
+- **Phase 9**: Fitbit data syncs automatically
 
 **Project Success**: Daily use for 30+ days, actionable insights discovered, habits improved based on data
