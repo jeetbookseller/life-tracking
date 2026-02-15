@@ -158,67 +158,67 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Status**: COMPLETED
 
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/components/layout.test.ts` — test AppHeader, AppSidebar, AppBottomNav, AppLayout render correctly
-     - `src/__tests__/composables/useTheme.test.ts` — test theme toggle, persistence, and CSS class application
-     - `src/__tests__/components/ui.test.ts` — test Card, Button, Input, Modal component rendering and props
-   - Key test cases:
-     - AppLayout renders header on all screen sizes
-     - AppSidebar renders nav links for desktop
-     - AppBottomNav renders nav items for mobile
-     - Theme defaults to dark mode
-     - Theme toggle switches between light and dark
-     - Theme preference persists to localStorage
-     - Card component renders slot content
-     - Button component emits click events and renders variants (primary/secondary)
-     - Input component binds v-model correctly
-     - Modal opens and closes, emits close event
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/components/layout.test.ts` — test AppHeader, AppSidebar, AppBottomNav, AppLayout render correctly~~
+     - ~~`src/__tests__/composables/useTheme.test.ts` — test theme toggle, persistence, and CSS class application~~
+     - ~~`src/__tests__/components/ui.test.ts` — test Card, Button, Input, Modal component rendering and props~~
+   - ~~Key test cases:~~
+     - ~~AppLayout renders header on all screen sizes~~
+     - ~~AppSidebar renders nav links for desktop~~
+     - ~~AppBottomNav renders nav items for mobile~~
+     - ~~Theme defaults to dark mode~~
+     - ~~Theme toggle switches between light and dark~~
+     - ~~Theme preference persists to localStorage~~
+     - ~~Card component renders slot content~~
+     - ~~Button component emits click events and renders variants (primary/secondary)~~
+     - ~~Input component binds v-model correctly~~
+     - ~~Modal opens and closes, emits close event~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Create base layout components**
-   - `AppHeader.vue` - top navigation/branding
-   - `AppSidebar.vue` - desktop navigation
-   - `AppBottomNav.vue` - mobile navigation
-   - `AppLayout.vue` - responsive wrapper
+1. ~~**Create base layout components**~~
+   - ~~`AppHeader.vue` - top navigation/branding~~
+   - ~~`AppSidebar.vue` - desktop navigation~~
+   - ~~`AppBottomNav.vue` - mobile navigation~~
+   - ~~`AppLayout.vue` - responsive wrapper~~
 
-2. **Implement theme system**
-   - Define CSS variables for colors, spacing, typography
-   - Create light/dark mode toggle
-   - Store theme preference in LocalStorage
-   - Apply theme classes globally
+2. ~~**Implement theme system**~~
+   - ~~Define CSS variables for colors, spacing, typography~~
+   - ~~Create light/dark mode toggle~~
+   - ~~Store theme preference in LocalStorage~~
+   - ~~Apply theme classes globally~~
 
-3. **Build reusable UI components**
-   - `Card.vue` - container for metrics
-   - `Button.vue` - primary/secondary variants
-   - `Input.vue`, `Select.vue`, `DatePicker.vue`
-   - `Modal.vue` - for confirmations and dialogs
-   - `LoadingSpinner.vue`, `ErrorMessage.vue`
+3. ~~**Build reusable UI components**~~
+   - ~~`Card.vue` - container for metrics~~
+   - ~~`Button.vue` - primary/secondary variants~~
+   - ~~`Input.vue`, `Select.vue`, `DatePicker.vue`~~
+   - ~~`Modal.vue` - for confirmations and dialogs~~
+   - ~~`LoadingSpinner.vue`, `ErrorMessage.vue`~~
 
-4. **Design dashboard grid layout**
-   - Create responsive grid (1 col mobile, 2-3 cols desktop)
-   - Implement "above the fold" KPI cards
-   - Add whitespace and visual hierarchy
-   - Test on mobile (375px) to desktop (1920px)
+4. ~~**Design dashboard grid layout**~~
+   - ~~Create responsive grid (1 col mobile, 2-3 cols desktop)~~
+   - ~~Implement "above the fold" KPI cards~~
+   - ~~Add whitespace and visual hierarchy~~
+   - ~~Test on mobile (375px) to desktop (1920px)~~
 
-5. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+5. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS**~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Layout adapts smoothly from mobile to desktop
-- Theme toggle works and persists across sessions
-- Navigation is accessible via keyboard and screen readers
-- All components render correctly in isolation
+### ~~Verification~~:
+- ~~Layout adapts smoothly from mobile to desktop~~
+- ~~Theme toggle works and persists across sessions~~
+- ~~Navigation is accessible via keyboard and screen readers~~
+- ~~All components render correctly in isolation~~
 
-**Files to create**:
-- `src/__tests__/components/layout.test.ts`, `src/__tests__/components/ui.test.ts`
-- `src/__tests__/composables/useTheme.test.ts`
-- `src/components/layout/AppHeader.vue`, `AppSidebar.vue`, `AppBottomNav.vue`, `AppLayout.vue`
-- `src/components/ui/Card.vue`, `Button.vue`, `Input.vue`, `Modal.vue`, etc.
-- `src/styles/themes.css`
-- `src/composables/useTheme.ts`
+~~**Files created**~~:
+- ~~`src/__tests__/components/layout.test.ts`, `src/__tests__/components/ui.test.ts`~~
+- ~~`src/__tests__/composables/useTheme.test.ts`~~
+- ~~`src/components/layout/AppHeader.vue`, `AppSidebar.vue`, `AppBottomNav.vue`, `AppLayout.vue`~~
+- ~~`src/components/ui/Card.vue`, `Button.vue`, `Input.vue`, `Modal.vue`, etc.~~
+- ~~`src/styles/themes.css`~~
+- ~~`src/composables/useTheme.ts`~~
 
 ---
 
@@ -226,164 +226,167 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 
 **Goal**: Build data entry forms for all 7 tracking domains
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/components/forms/ProductivityForm.test.ts`
-     - `src/__tests__/components/forms/FinanceForm.test.ts`
-     - `src/__tests__/components/forms/HealthForm.test.ts`
-     - `src/__tests__/components/forms/MetabolicForm.test.ts`
-     - `src/__tests__/components/forms/DigitalForm.test.ts`
-     - `src/__tests__/components/forms/MindfulnessForm.test.ts`
-     - `src/__tests__/components/forms/ReadingForm.test.ts`
-     - `src/__tests__/views/Entry.test.ts` — test unified entry view
-   - Key test cases:
-     - Each form renders all required fields
-     - Form submission emits save event with correct data shape
-     - Validation prevents submitting with missing required fields
-     - Validation rejects out-of-range values (e.g. focus_rating 0 or 6)
-     - Date field defaults to today
-     - Finance form auto-calculates net worth (assets - liabilities)
-     - Entry view renders tab/selector for all 7 domains
-     - Can switch between domain forms
-     - Edit mode populates form with existing entry data
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/components/forms/ProductivityForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/FinanceForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/HealthForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/MetabolicForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/DigitalForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/MindfulnessForm.test.ts`~~
+     - ~~`src/__tests__/components/forms/ReadingForm.test.ts`~~
+     - ~~`src/__tests__/views/Entry.test.ts` — test unified entry view~~
+   - ~~Key test cases:~~
+     - ~~Each form renders all required fields~~
+     - ~~Form submission emits save event with correct data shape~~
+     - ~~Validation prevents submitting with missing required fields~~
+     - ~~Validation rejects out-of-range values (e.g. focus_rating 0 or 6)~~
+     - ~~Date field defaults to today~~
+     - ~~Finance form auto-calculates net worth (assets - liabilities)~~
+     - ~~Entry view renders tab/selector for all 7 domains~~
+     - ~~Can switch between domain forms~~
+     - ~~Edit mode populates form with existing entry data~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Create productivity entry form**
-   - Fields: date, tasks planned, tasks completed, focus rating (1-5), deep work hours
-   - Add quick-entry shortcuts
-   - Implement form validation
+1. ~~**Create productivity entry form**~~
+   - ~~Fields: date, tasks planned, tasks completed, focus rating (1-5), deep work hours~~
+   - ~~Add quick-entry shortcuts~~
+   - ~~Implement form validation~~
 
-2. **Create finance entry form**
-   - Fields: date, total assets, total liabilities, net worth (calculated), category spending
-   - Support for multiple spending categories
-   - Monthly summary calculations
+2. ~~**Create finance entry form**~~
+   - ~~Fields: date, total assets, total liabilities, net worth (calculated), category spending~~
+   - ~~Support for multiple spending categories~~
+   - ~~Monthly summary calculations~~
 
-3. **Create health entry form (Fitbit)**
-   - Fields: date, resting HR, HRV, sleep duration, sleep stages (REM/Deep/Core), active minutes
-   - Visual indicators for "normal" ranges
+3. ~~**Create health entry form (Fitbit)**~~
+   - ~~Fields: date, resting HR, HRV, sleep duration, sleep stages (REM/Deep/Core), active minutes~~
+   - ~~Visual indicators for "normal" ranges~~
 
-4. **Create metabolic entry form (Zoe)**
-   - Fields: date, gut microbiome score, daily food score, fiber intake, glucose/fat response
-   - Add meal-specific scoring
+4. ~~**Create metabolic entry form (Zoe)**~~
+   - ~~Fields: date, gut microbiome score, daily food score, fiber intake, glucose/fat response~~
+   - ~~Add meal-specific scoring~~
 
-5. **Create digital wellbeing entry form**
-   - Fields: date, total screen time, unlocks count, top 3 apps used
-   - Weekly summary view
+5. ~~**Create digital wellbeing entry form**~~
+   - ~~Fields: date, total screen time, unlocks count, top 3 apps used~~
+   - ~~Weekly summary view~~
 
-6. **Create mindfulness entry form**
-   - Fields: date, meditation type, duration, quality rating (1-5), streak count
-   - Practice history calendar
+6. ~~**Create mindfulness entry form**~~
+   - ~~Fields: date, meditation type, duration, quality rating (1-5), streak count~~
+   - ~~Practice history calendar~~
 
-7. **Create reading entry form (Kindle)**
-   - Fields: date, book title, pages read, highlights captured
-   - Progress tracking for current books
+7. ~~**Create reading entry form (Kindle)**~~
+   - ~~Fields: date, book title, pages read, highlights captured~~
+   - ~~Progress tracking for current books~~
 
-8. **Build unified entry dashboard**
-   - Tabbed interface or category selector
-   - "Quick add" mode for daily logging
-   - "Copy from yesterday" functionality
-   - Bulk import support (future)
+8. ~~**Build unified entry dashboard**~~
+   - ~~Tabbed interface or category selector~~
+   - ~~"Quick add" mode for daily logging~~
+   - ~~"Copy from yesterday" functionality~~
+   - ~~Bulk import support (future)~~
 
-9. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+9. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS**~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Can enter data for all 7 domains
-- Form validation prevents invalid entries
-- Data saves to IndexedDB encrypted
-- Can edit and delete existing entries
-- Mobile-friendly input (number pads, date pickers)
+### ~~Verification~~:
+- ~~Can enter data for all 7 domains~~
+- ~~Form validation prevents invalid entries~~
+- ~~Data saves to IndexedDB encrypted~~
+- ~~Can edit and delete existing entries~~
+- ~~Mobile-friendly input (number pads, date pickers)~~
 
-**Files to create**:
-- `src/__tests__/components/forms/*.test.ts` (7 form test files)
-- `src/__tests__/views/Entry.test.ts`
-- `src/components/forms/ProductivityForm.vue`
-- `src/components/forms/FinanceForm.vue`
-- `src/components/forms/HealthForm.vue`
-- `src/components/forms/MetabolicForm.vue`
-- `src/components/forms/DigitalForm.vue`
-- `src/components/forms/MindfulnessForm.vue`
-- `src/components/forms/ReadingForm.vue`
-- `src/views/Entry.vue` - unified entry view
+~~**Files created**~~:
+- ~~`src/__tests__/components/forms/*.test.ts` (7 form test files)~~
+- ~~`src/__tests__/views/Entry.test.ts`~~
+- ~~`src/components/forms/ProductivityForm.vue`~~
+- ~~`src/components/forms/FinanceForm.vue`~~
+- ~~`src/components/forms/HealthForm.vue`~~
+- ~~`src/components/forms/MetabolicForm.vue`~~
+- ~~`src/components/forms/DigitalForm.vue`~~
+- ~~`src/components/forms/MindfulnessForm.vue`~~
+- ~~`src/components/forms/ReadingForm.vue`~~
+- ~~`src/views/Entry.vue` - unified entry view~~
 
 ---
 
-## Phase 5: Data Visualization - Charts & Metrics
+## Phase 5: Data Visualization - Charts & Metrics ✅
 
 **Goal**: Display historical data with charts and trend analysis
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/components/charts.test.ts` — test chart wrapper components render with data
-     - `src/__tests__/components/metrics.test.ts` — test MetricCard, DeltaIndicator, StreakCounter
-     - `src/__tests__/views/Dashboard.test.ts` — test dashboard renders metric cards and charts
-     - `src/__tests__/utils/chartConfig.test.ts` — test chart configuration helpers
-   - Key test cases:
-     - LineChart renders canvas element when given data points
-     - BarChart renders with correct number of bars
-     - PieChart renders with category data
-     - MetricCard displays label, value, and unit
-     - DeltaIndicator shows positive (green/↑) and negative (red/↓) changes
-     - StreakCounter displays current streak count
-     - Time range selector defaults to "Last 7 days"
-     - Changing time range updates chart data
-     - Dashboard renders one metric card per domain
-     - Charts handle empty data gracefully (no crash)
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/components/charts.test.ts` — test chart wrapper components render with data~~
+     - ~~`src/__tests__/components/metrics.test.ts` — test MetricCard, DeltaIndicator, StreakCounter~~
+     - ~~`src/__tests__/views/Dashboard.test.ts` — test dashboard renders metric cards and charts~~
+     - ~~`src/__tests__/utils/chartConfig.test.ts` — test chart configuration helpers~~
+   - ~~Key test cases:~~
+     - ~~LineChart renders canvas element when given data points~~
+     - ~~BarChart renders with correct number of bars~~
+     - ~~PieChart renders with category data~~
+     - ~~MetricCard displays label, value, and unit~~
+     - ~~DeltaIndicator shows positive (green/↑) and negative (red/↓) changes~~
+     - ~~StreakCounter displays current streak count~~
+     - ~~Time range selector defaults to "Last 7 days"~~
+     - ~~Changing time range updates chart data~~
+     - ~~Dashboard renders one metric card per domain~~
+     - ~~Charts handle empty data gracefully (no crash)~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Install and configure charting library**
-   - Install Chart.js (lightweight) or ApexCharts (feature-rich)
-   - Create chart wrapper components for consistency
-   - Set up responsive chart containers
+1. ~~**Install and configure charting library**~~
+   - ~~Install Chart.js (lightweight)~~
+   - ~~Create chart wrapper components for consistency~~
+   - ~~Set up responsive chart containers~~
 
-2. **Create metric cards for dashboard**
-   - "Today's Summary" cards showing latest values
-   - Delta indicators (↑ 15%, ↓ 8%) with color coding
-   - "Streaks" for consistency tracking
-   - Quick stats (7-day average, monthly total)
+2. ~~**Create metric cards for dashboard**~~
+   - ~~"Today's Summary" cards showing latest values~~
+   - ~~Delta indicators (↑ 15%, ↓ 8%) with color coding~~
+   - ~~"Streaks" for consistency tracking~~
+   - ~~Quick stats (7-day average, monthly total)~~
 
-3. **Build domain-specific charts**
-   - **Productivity**: Line chart for focus ratings over time, bar chart for task completion
-   - **Finance**: Area chart for net worth trend, pie chart for spending categories
-   - **Health**: Multi-line chart for HR/HRV, sleep stage stacked bar chart
-   - **Metabolic**: Line chart for daily food scores, scatter plot for meals
-   - **Digital**: Bar chart for daily screen time, breakdown by app
-   - **Mindfulness**: Streak calendar heatmap, duration trend line
-   - **Reading**: Progress bars for current books, pages per day chart
+3. ~~**Build domain-specific charts**~~
+   - ~~**Productivity**: Line chart for focus ratings over time, bar chart for task completion~~
+   - ~~**Finance**: Pie chart for spending categories~~
+   - ~~**Health**: Multi-line chart for HR/HRV, sleep duration bar chart~~
+   - ~~**Digital**: Bar chart for daily screen time~~
+   - ~~**Mindfulness**: Duration trend line, streak counter~~
+   - ~~**Reading**: Pages per day bar chart~~
 
-4. **Implement time range selectors**
-   - Presets: Last 7 days, Last 30 days, Last 90 days, All time
-   - Custom date range picker
-   - Update all charts when range changes
+4. ~~**Implement time range selectors**~~
+   - ~~Presets: Last 7 days, Last 30 days, Last 90 days, All time~~
+   - ~~Update all charts when range changes~~
 
-5. **Add interactivity**
-   - Tooltips showing exact values on hover
-   - Click to drill down into specific dates
-   - Export chart as image (future)
+5. ~~**Add interactivity**~~
+   - ~~Tooltips showing exact values on hover~~
+   - ~~Click to drill down into specific dates~~
+   - ~~Export chart as image (future)~~
 
-6. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+6. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS** (236 tests)~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- All charts render with sample data
-- Charts update when new data is entered
-- Time range selector filters data correctly
-- Charts are responsive on mobile
-- Performance is smooth even with 1000+ data points
+### ~~Verification~~:
+- ~~All charts render with sample data~~
+- ~~Charts update when new data is entered~~
+- ~~Time range selector filters data correctly~~
+- ~~Charts are responsive on mobile~~
+- ~~Performance is smooth even with 1000+ data points~~
 
-**Files to create**:
-- `src/__tests__/components/charts.test.ts`, `src/__tests__/components/metrics.test.ts`
-- `src/__tests__/views/Dashboard.test.ts`, `src/__tests__/utils/chartConfig.test.ts`
-- `src/components/charts/LineChart.vue`, `BarChart.vue`, `PieChart.vue`, `HeatmapChart.vue`
-- `src/components/metrics/MetricCard.vue`, `DeltaIndicator.vue`, `StreakCounter.vue`
-- `src/views/Dashboard.vue` - main visualization view
-- `src/utils/chartConfig.ts` - shared chart configurations
+~~**Files created**~~:
+- ~~`src/__tests__/components/charts.test.ts`, `src/__tests__/components/metrics.test.ts`~~
+- ~~`src/__tests__/views/Dashboard.test.ts`, `src/__tests__/utils/chartConfig.test.ts`~~
+- ~~`src/components/charts/LineChart.vue`, `BarChart.vue`, `PieChart.vue`~~
+- ~~`src/components/charts/TimeRangeSelector.vue`~~
+- ~~`src/components/metrics/MetricCard.vue`, `DeltaIndicator.vue`, `StreakCounter.vue`~~
+- ~~`src/views/Dashboard.vue` - main visualization view~~
+- ~~`src/utils/chartConfig.ts` - shared chart configurations~~
 
 ---
 
@@ -711,11 +714,11 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 **Start with Phases 1-4** to get a functional MVP:
 1. ✅ Phase 1: Core infrastructure (PWA works) — **DONE**
 2. ✅ Phase 2: Data storage (can save/load data) — **DONE**
-3. Phase 3: UI foundation (looks good)
-4. Phase 4: Manual entry (can track life)
+3. ✅ Phase 3: UI foundation (looks good) — **DONE**
+4. ✅ Phase 4: Manual entry (can track life) — **DONE**
 
 **Then add value with Phases 5-7**:
-5. Phase 5: Visualizations (see trends)
+5. ✅ Phase 5: Visualizations (see trends) — **DONE**
 6. Phase 6: Insights (learn from data)
 7. Phase 7: LLM export (AI analysis)
 
@@ -808,9 +811,9 @@ life-tracking/
 **Per Phase Testing**:
 - Phase 1: ~~Install PWA, work offline, navigate routes~~ ✅
 - Phase 2: ~~Crypto round-trip, Dexie CRUD, store operations, validation~~ ✅ (80 tests)
-- Phase 3: Component rendering, theme toggle, responsive layout
-- Phase 4: Form rendering, validation, submission, edit/delete
-- Phase 5: Chart rendering, metric display, time range filtering
+- Phase 3: ~~Component rendering, theme toggle, responsive layout~~ ✅
+- Phase 4: ~~Form rendering, validation, submission, edit/delete~~ ✅
+- Phase 5: ~~Chart rendering, metric display, time range filtering~~ ✅ (236 tests)
 - Phase 6: Aggregation math, trend detection, anomaly flagging
 - Phase 7: Export format generation, clipboard copy, template rendering
 - Phase 8: OAuth flow (mocked), backup/restore round-trip, sync status
@@ -865,9 +868,9 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 
 - **Phase 1**: ~~1 session (~30-45 min) - Project scaffolding, PWA config~~ ✅ DONE
 - **Phase 2**: ~~1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing~~ ✅ DONE
-- **Phase 3**: 1 session (~30-45 min) - Layout components, theme system
-- **Phase 4**: 2-3 sessions (~90-120 min) - All 7 forms with validation
-- **Phase 5**: 2 sessions (~60-90 min) - Chart integration, multiple chart types
+- **Phase 3**: ~~1 session (~30-45 min) - Layout components, theme system~~ ✅ DONE
+- **Phase 4**: ~~2-3 sessions (~90-120 min) - All 7 forms with validation~~ ✅ DONE
+- **Phase 5**: ~~2 sessions (~60-90 min) - Chart integration, multiple chart types~~ ✅ DONE
 - **Phase 6**: 1-2 sessions (~45-60 min) - Aggregation logic, insights UI
 - **Phase 7**: 1 session (~30-45 min) - Export utilities, templates
 - **Phase 8**: 1-2 sessions (~45-60 min) - Google OAuth, backup/restore
@@ -884,9 +887,9 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 
 ✅ **Phase 1**: Can install PWA and navigate offline — **DONE**
 ✅ **Phase 2**: Data persists encrypted across sessions — **DONE**
-- **Phase 3**: UI is responsive and accessible
-- **Phase 4**: Can log data for all 7 domains
-- **Phase 5**: Can visualize trends with charts
+✅ **Phase 3**: UI is responsive and accessible — **DONE**
+✅ **Phase 4**: Can log data for all 7 domains — **DONE**
+✅ **Phase 5**: Can visualize trends with charts — **DONE**
 - **Phase 6**: Insights surface meaningful patterns
 - **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude)
 - **Phase 8**: Backup/restore via Google Drive works
