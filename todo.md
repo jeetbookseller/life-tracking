@@ -631,6 +631,120 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 
 ---
 
+## Phase 8.5: Settings Tab Implementation
+
+**Goal**: Populate the empty Settings tab with functional sections for security, appearance, data management, goals configuration, and app info
+
+**Status**: NOT STARTED
+
+### Architecture:
+
+```
+Settings.vue (container — vertical stack of Card sections)
+├── SecuritySettings.vue       — change password, auto-lock timeout
+├── AppearanceSettings.vue     — theme toggle, font size
+├── DataManagementSettings.vue — import, export, clear data, DB stats
+├── GoalsSettings.vue          — CRUD for insight goals
+├── AboutSettings.vue          — version, storage usage
+└── ComingSoonSettings.vue     — Phase 9/10 placeholders
+```
+
+### Tasks:
+
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/stores/settings.test.ts` — test settings store (auto-lock timeout, font size persistence)
+     - `src/__tests__/views/Settings.test.ts` — test Settings view renders all sections
+     - `src/__tests__/components/settings/SecuritySettings.test.ts` — test password change modal, auto-lock dropdown
+     - `src/__tests__/components/settings/AppearanceSettings.test.ts` — test theme toggle, font size selector
+     - `src/__tests__/components/settings/DataManagementSettings.test.ts` — test import/export/clear/stats
+     - `src/__tests__/components/settings/GoalsSettings.test.ts` — test goal CRUD UI
+     - `src/__tests__/components/settings/AboutSettings.test.ts` — test version and storage display
+     - `src/__tests__/utils/reEncrypt.test.ts` — test re-encryption on password change
+     - `src/__tests__/composables/useAutoLock.test.ts` — test idle timer logic
+   - Key test cases:
+     - Settings store loads defaults when no localStorage entry exists
+     - Settings store persists changes to localStorage
+     - Settings view renders all 6 section components
+     - Change password modal validates current password, new password match, min length
+     - Password change triggers re-encryption of all stored data
+     - Theme toggle switches between light/dark and persists
+     - Font size selector applies data-font-size attribute
+     - Import button opens MappingWizard in modal
+     - Export button triggers full DB dump download
+     - Clear all data requires typing "DELETE" to confirm
+     - DB statistics shows entry count per domain
+     - Goals list displays existing goals with delete buttons
+     - Add goal form validates domain/metric/target
+     - Auto-lock timer locks app after idle timeout
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
+1. **Create settings store and view skeleton**
+   - `src/stores/settings.ts` — Pinia store for `autoLockTimeoutMinutes` (default: 15) and `fontSize` (default: 'medium'), persisted to localStorage key `life-tracker-settings`
+   - Replace `src/views/Settings.vue` placeholder with section component layout
+
+2. **Build About and Coming Soon sections**
+   - `src/components/settings/AboutSettings.vue` — App version, storage usage via `navigator.storage.estimate()`, tech stack
+   - `src/components/settings/ComingSoonSettings.vue` — Dashed-border placeholders for Phase 9 (Google Drive Backup) and Phase 10 (API Connectors)
+
+3. **Build Appearance Settings**
+   - `src/components/settings/AppearanceSettings.vue` — Theme toggle (light/dark), font size selector (small/medium/large)
+   - Add `[data-font-size]` CSS rules to global styles
+
+4. **Build Goals Settings**
+   - `src/components/settings/GoalsSettings.vue` — Lists goals from `useInsightsStore().goals`, add-goal form (domain → metric → target), delete button
+   - Reuses existing `Goal` interface, `addGoal()`, `removeGoal()` from insights store
+
+5. **Build Data Management Settings**
+   - `src/components/settings/DataManagementSettings.vue` — Four features:
+     - Import: opens Modal with existing MappingWizard
+     - Export: full DB dump via `dexie-export-import` → `.json` file download
+     - Clear All Data: danger button → confirmation modal (type "DELETE") → clears IndexedDB + localStorage goals
+     - DB Statistics: entry count per domain table
+
+6. **Build Security Settings**
+   - `src/components/settings/SecuritySettings.vue` — Change password modal, auto-lock timeout dropdown
+   - `src/utils/reEncrypt.ts` — Re-encryption helper: decrypt all records with old key → encrypt with new key → write back (critical because `setPassword()` generates new salt/key)
+
+7. **Add auto-lock integration**
+   - `src/composables/useAutoLock.ts` — Idle timer composable (listens for activity events, locks via `authStore.lock()` after timeout)
+   - Integrate into `App.vue` or `AppLayout.vue`
+
+8. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
+### Verification:
+- Settings view renders all sections without errors
+- Can change master password and still access all existing data (re-encryption works)
+- Theme and font size changes persist across page reloads
+- Can import data via MappingWizard from Settings
+- Can export full database backup as JSON file
+- Can clear all data with confirmation safeguard
+- Goals configured in Settings appear in Insights tab
+- Auto-lock triggers after idle timeout
+- App remains fully functional after all settings operations
+
+**Files to create**:
+- `src/stores/settings.ts`
+- `src/__tests__/stores/settings.test.ts`, `src/__tests__/views/Settings.test.ts`
+- `src/components/settings/SecuritySettings.vue`, `src/__tests__/components/settings/SecuritySettings.test.ts`
+- `src/components/settings/AppearanceSettings.vue`, `src/__tests__/components/settings/AppearanceSettings.test.ts`
+- `src/components/settings/DataManagementSettings.vue`, `src/__tests__/components/settings/DataManagementSettings.test.ts`
+- `src/components/settings/GoalsSettings.vue`, `src/__tests__/components/settings/GoalsSettings.test.ts`
+- `src/components/settings/AboutSettings.vue`, `src/__tests__/components/settings/AboutSettings.test.ts`
+- `src/components/settings/ComingSoonSettings.vue`
+- `src/utils/reEncrypt.ts`, `src/__tests__/utils/reEncrypt.test.ts`
+- `src/composables/useAutoLock.ts`, `src/__tests__/composables/useAutoLock.test.ts`
+
+**Files to modify**:
+- `src/views/Settings.vue` — replace placeholder with section layout
+- `src/App.vue` or `src/components/layout/AppLayout.vue` — integrate auto-lock
+- Global CSS — add font-size data-attribute rules
+
+---
+
 ## Phase 9: Google Drive Backup - Cloud Sync
 
 **Goal**: Implement encrypted cloud backup via Google Drive
@@ -787,7 +901,8 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 7. ✅ Phase 7: LLM export (AI analysis) — **DONE**
 8. ✅ Phase 8: Universal data ingestion (CSV/JSON + adapters) — **DONE**
 
-**Optional upgrades (Phases 9-10)**:
+**Next up — Settings & cloud upgrades (Phases 8.5-10)**:
+8.5. Phase 8.5: Settings tab (security, appearance, data management, goals, about)
 9. Phase 9: Cloud backup (data safety)
 10. Phase 10: Optional automated connectors (high-frequency sources)
 
