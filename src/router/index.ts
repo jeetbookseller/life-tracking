@@ -25,6 +25,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'Insights', icon: 'insights' },
   },
   {
+    path: '/export',
+    name: 'Export',
+    component: () => import('@/views/Export.vue'),
+    meta: { title: 'Export', icon: 'export' },
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('@/views/Settings.vue'),

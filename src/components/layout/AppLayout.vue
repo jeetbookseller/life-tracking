@@ -11,6 +11,7 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: '📊' },
   { path: '/entry', label: 'Log', icon: '✏️' },
   { path: '/insights', label: 'Insights', icon: '💡' },
+  { path: '/export', label: 'Export', icon: '📤' },
   { path: '/settings', label: 'Settings', icon: '⚙️' },
 ]
 
