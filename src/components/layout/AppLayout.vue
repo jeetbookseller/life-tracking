@@ -4,8 +4,12 @@ import AppHeader from './AppHeader.vue'
 import AppSidebar from './AppSidebar.vue'
 import AppBottomNav from './AppBottomNav.vue'
 import { useTheme } from '@/composables/useTheme'
+import { useAutoLock } from '@/composables/useAutoLock'
+import { useSettingsStore } from '@/stores/settings'
 
 const { initTheme } = useTheme()
+const settingsStore = useSettingsStore()
+useAutoLock()
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -17,6 +21,7 @@ const navItems = [
 
 onMounted(() => {
   initTheme()
+  settingsStore.load()
 })
 </script>
 

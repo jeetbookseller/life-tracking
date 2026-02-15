@@ -27,3 +27,16 @@
 :root[data-theme='dark'] {
   /* Already defined in variables.css */
 }
+
+/* Font size overrides */
+:root[data-font-size='small'] {
+  font-size: 14px;
+}
+
+:root[data-font-size='medium'] {
+  font-size: 16px;
+}
+
+:root[data-font-size='large'] {
+  font-size: 18px;
+}
