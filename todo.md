@@ -390,158 +390,162 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 
 ---
 
-## Phase 6: Aggregation & Insights - Summary Calculations
+## Phase 6: Aggregation & Insights - Summary Calculations ✅
 
 **Goal**: Calculate daily, weekly, and monthly summaries for performance
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/utils/aggregation.test.ts` — test summary calculation functions
-     - `src/__tests__/utils/trends.test.ts` — test trend detection algorithms
-     - `src/__tests__/stores/insights.test.ts` — test insights store state management
-     - `src/__tests__/views/Insights.test.ts` — test insights view rendering
-     - `src/__tests__/components/insights.test.ts` — test ComparisonCard, AnomalyAlert, GoalProgress
-   - Key test cases:
-     - Daily summary correctly sums/averages values for a given day
-     - Weekly rollup aggregates 7 days of data
-     - Monthly summary calculates delta % from previous month
-     - Moving average (7-day) calculates correctly with sample data
-     - Moving average (30-day) handles fewer than 30 data points
-     - Anomaly detection flags values >2 std deviations from mean
-     - Streak detection counts consecutive days meeting a threshold
-     - Significant change detection flags >15% week-over-week delta
-     - ComparisonCard renders "this week" vs "last week" values
-     - AnomalyAlert renders when anomalies are present, hides when none
-     - GoalProgress shows correct percentage toward target
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/utils/aggregation.test.ts` — test summary calculation functions~~
+     - ~~`src/__tests__/utils/trends.test.ts` — test trend detection algorithms~~
+     - ~~`src/__tests__/stores/insights.test.ts` — test insights store state management~~
+     - ~~`src/__tests__/views/Insights.test.ts` — test insights view rendering~~
+     - ~~`src/__tests__/components/insights.test.ts` — test ComparisonCard, AnomalyAlert, GoalProgress~~
+   - ~~Key test cases:~~
+     - ~~Daily summary correctly sums/averages values for a given day~~
+     - ~~Weekly rollup aggregates 7 days of data~~
+     - ~~Monthly summary calculates delta % from previous month~~
+     - ~~Moving average (7-day) calculates correctly with sample data~~
+     - ~~Moving average (30-day) handles fewer than 30 data points~~
+     - ~~Anomaly detection flags values >2 std deviations from mean~~
+     - ~~Streak detection counts consecutive days meeting a threshold~~
+     - ~~Significant change detection flags >15% week-over-week delta~~
+     - ~~ComparisonCard renders "this week" vs "last week" values~~
+     - ~~AnomalyAlert renders when anomalies are present, hides when none~~
+     - ~~GoalProgress shows correct percentage toward target~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Create aggregation utilities**
-   - Daily summaries (sum, average, median calculations)
-   - Weekly rollups (totals, averages, min/max)
-   - Monthly summaries (delta %, IQR for financial data)
-   - Store pre-calculated summaries in IndexedDB for performance
+1. ~~**Create aggregation utilities**~~
+   - ~~Daily summaries (sum, average, median calculations)~~
+   - ~~Weekly rollups (totals, averages, min/max)~~
+   - ~~Monthly summaries (delta %, IQR for financial data)~~
+   - ~~Store pre-calculated summaries in IndexedDB for performance~~
 
-2. **Build summary tables in IndexedDB**
-   - `daily_summaries` - one row per day per domain
-   - `weekly_summaries` - rolling 7-day aggregates
-   - `monthly_summaries` - calendar month aggregates
-   - Auto-update summaries when new data is entered
+2. ~~**Build summary tables in IndexedDB**~~
+   - ~~`daily_summaries` - one row per day per domain~~
+   - ~~`weekly_summaries` - rolling 7-day aggregates~~
+   - ~~`monthly_summaries` - calendar month aggregates~~
+   - ~~Auto-update summaries when new data is entered~~
 
-3. **Implement trend detection**
-   - Calculate moving averages (7-day, 30-day)
-   - Detect anomalies (values >2 std deviations from mean)
-   - Identify streaks (consecutive days meeting goals)
-   - Flag significant changes (>15% delta week-over-week)
+3. ~~**Implement trend detection**~~
+   - ~~Calculate moving averages (7-day, 30-day)~~
+   - ~~Detect anomalies (values >2 std deviations from mean)~~
+   - ~~Identify streaks (consecutive days meeting goals)~~
+   - ~~Flag significant changes (>15% delta week-over-week)~~
 
-4. **Create insights view**
-   - "This Week vs Last Week" comparison cards
-   - Anomaly highlights ("Sleep was unusually low on Tuesday")
-   - Correlation hints ("Meditation seems to correlate with better focus")
-   - Personal bests ("Longest reading streak: 12 days")
+4. ~~**Create insights view**~~
+   - ~~"This Week vs Last Week" comparison cards~~
+   - ~~Anomaly highlights ("Sleep was unusually low on Tuesday")~~
+   - ~~Correlation hints ("Meditation seems to correlate with better focus")~~
+   - ~~Personal bests ("Longest reading streak: 12 days")~~
 
-5. **Add goal tracking**
-   - Set target values for each metric
-   - Visual progress indicators
-   - Streak tracking for consistency goals
+5. ~~**Add goal tracking**~~
+   - ~~Set target values for each metric~~
+   - ~~Visual progress indicators~~
+   - ~~Streak tracking for consistency goals~~
 
-6. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+6. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS**~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Summaries calculate correctly for all time ranges
-- Summaries update when data changes
-- Anomalies are detected and highlighted
-- Insights view shows meaningful patterns
-- Performance remains fast with large datasets
+### ~~Verification~~:
+- ~~Summaries calculate correctly for all time ranges~~
+- ~~Summaries update when data changes~~
+- ~~Anomalies are detected and highlighted~~
+- ~~Insights view shows meaningful patterns~~
+- ~~Performance remains fast with large datasets~~
 
-**Files to create**:
-- `src/__tests__/utils/aggregation.test.ts`, `src/__tests__/utils/trends.test.ts`
-- `src/__tests__/stores/insights.test.ts`, `src/__tests__/views/Insights.test.ts`
-- `src/__tests__/components/insights.test.ts`
-- `src/utils/aggregation.ts` - calculation functions
-- `src/utils/trends.ts` - trend detection algorithms
-- `src/stores/insights.ts` - insights state management
-- `src/views/Insights.vue` - insights dashboard
-- `src/components/insights/ComparisonCard.vue`, `AnomalyAlert.vue`, `GoalProgress.vue`
+~~**Files created**~~:
+- ~~`src/__tests__/utils/aggregation.test.ts`, `src/__tests__/utils/trends.test.ts`~~
+- ~~`src/__tests__/stores/insights.test.ts`, `src/__tests__/views/Insights.test.ts`~~
+- ~~`src/__tests__/components/insights.test.ts`~~
+- ~~`src/utils/aggregation.ts` - calculation functions~~
+- ~~`src/utils/trends.ts` - trend detection algorithms~~
+- ~~`src/stores/insights.ts` - insights state management~~
+- ~~`src/views/Insights.vue` - insights dashboard~~
+- ~~`src/components/insights/ComparisonCard.vue`, `AnomalyAlert.vue`, `GoalProgress.vue`~~
 
 ---
 
-## Phase 7: LLM Export - Markdown-KV Format
+## Phase 7: LLM Export - Markdown-KV Format ✅
 
 **Goal**: Export data in LLM-optimized format for AI analysis
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/utils/export.test.ts` — test export format generators
-     - `src/__tests__/components/export.test.ts` — test ExportModal and PromptLibrary components
-     - `src/__tests__/views/Export.test.ts` — test export view rendering
-   - Key test cases:
-     - Markdown-KV export produces valid markdown with `Day: {Metric: Value}` format
-     - Export includes metadata header (date range, units)
-     - Export marks anomalies with markers
-     - Export filters by selected domains
-     - Export filters by date range
-     - JSON export produces valid parseable JSON
-     - CSV export produces valid CSV with headers
-     - ExportModal renders domain selector and date range picker
-     - Copy-to-clipboard button copies exported text
-     - PromptLibrary renders pre-written prompt suggestions
-     - Empty data produces meaningful "no data" export (not crash)
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/utils/export.test.ts` — test export format generators~~
+     - ~~`src/__tests__/components/export.test.ts` — test ExportModal and PromptLibrary components~~
+     - ~~`src/__tests__/views/Export.test.ts` — test export view rendering~~
+   - ~~Key test cases:~~
+     - ~~Markdown-KV export produces valid markdown with `Day: {Metric: Value}` format~~
+     - ~~Export includes metadata header (date range, units)~~
+     - ~~Export marks anomalies with markers~~
+     - ~~Export filters by selected domains~~
+     - ~~Export filters by date range~~
+     - ~~JSON export produces valid parseable JSON~~
+     - ~~CSV export produces valid CSV with headers~~
+     - ~~ExportModal renders domain selector and date range picker~~
+     - ~~Copy-to-clipboard button copies exported text~~
+     - ~~PromptLibrary renders pre-written prompt suggestions~~
+     - ~~Empty data produces meaningful "no data" export (not crash)~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Implement Markdown-KV export format**
-   - Create export utility that generates structured markdown
-   - Format: `Day: {Metric: Value, Metric: Value}`
-   - Include metadata (date range, units, user goals)
-   - Highlight anomalies with markers
+1. ~~**Implement Markdown-KV export format**~~
+   - ~~Create export utility that generates structured markdown~~
+   - ~~Format: `Day: {Metric: Value, Metric: Value}`~~
+   - ~~Include metadata (date range, units, user goals)~~
+   - ~~Highlight anomalies with markers~~
 
-2. **Build export UI**
-   - Date range selector for export
-   - Domain selector (export all or specific domains)
-   - Copy to clipboard button
-   - Download as .md file
+2. ~~**Build export UI**~~
+   - ~~Date range selector for export~~
+   - ~~Domain selector (export all or specific domains)~~
+   - ~~Copy to clipboard button~~
+   - ~~Download as .md file~~
 
-3. **Create export templates**
-   - "Weekly Summary" template
-   - "Monthly Review" template
-   - "Correlation Analysis" template
-   - "Custom Query" template
+3. ~~**Create export templates**~~
+   - ~~"Weekly Summary" template~~
+   - ~~"Monthly Review" template~~
+   - ~~"Correlation Analysis" template~~
+   - ~~"Custom Query" template~~
 
-4. **Add prompt suggestions**
-   - Pre-written prompts for common analyses
-   - Examples:
-     - "Analyze correlation between meditation and productivity"
-     - "Identify dietary patterns affecting sleep quality"
-     - "Suggest schedule optimizations based on focus patterns"
+4. ~~**Add prompt suggestions**~~
+   - ~~Pre-written prompts for common analyses~~
+   - ~~Examples:~~
+     - ~~"Analyze correlation between meditation and productivity"~~
+     - ~~"Identify dietary patterns affecting sleep quality"~~
+     - ~~"Suggest schedule optimizations based on focus patterns"~~
 
-5. **Implement alternative export formats**
-   - JSON export for backup/migration
-   - CSV export for spreadsheet analysis
-   - Markdown table format for GitHub/Notion
+5. ~~**Implement alternative export formats**~~
+   - ~~JSON export for backup/migration~~
+   - ~~CSV export for spreadsheet analysis~~
+   - ~~Markdown table format for GitHub/Notion~~
 
-6. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+6. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS**~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Export generates valid markdown that LLMs can parse
-- All selected data domains are included
-- Anomalies are clearly marked
-- Can copy to clipboard and paste into ChatGPT/Claude
-- Exported data accurately represents stored data
+### ~~Verification~~:
+- ~~Export generates valid markdown that LLMs can parse~~
+- ~~All selected data domains are included~~
+- ~~Anomalies are clearly marked~~
+- ~~Can copy to clipboard and paste into ChatGPT/Claude~~
+- ~~Exported data accurately represents stored data~~
 
-**Files to create**:
-- `src/__tests__/utils/export.test.ts`
-- `src/__tests__/components/export.test.ts`, `src/__tests__/views/Export.test.ts`
-- `src/utils/export.ts` - export format generators
-- `src/components/export/ExportModal.vue`
-- `src/components/export/PromptLibrary.vue`
-- `src/views/Export.vue` - export interface
+~~**Files created**~~:
+- ~~`src/__tests__/utils/export.test.ts`~~
+- ~~`src/__tests__/components/export.test.ts`, `src/__tests__/views/Export.test.ts`~~
+- ~~`src/utils/export.ts` - export format generators~~
+- ~~`src/components/export/ExportModal.vue`~~
+- ~~`src/components/export/PromptLibrary.vue`~~
+- ~~`src/views/Export.vue` - export interface~~
 
 ---
 
@@ -775,13 +779,13 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 3. ✅ Phase 3: UI foundation (looks good) — **DONE**
 4. ✅ Phase 4: Manual entry (can track life) — **DONE**
 
-**Then add value with Phases 5-7**:
+**Then add value with Phases 5-8**:
 5. ✅ Phase 5: Visualizations (see trends) — **DONE**
-6. Phase 6: Insights (learn from data)
-7. Phase 7: LLM export (AI analysis)
-
-**Finally, add convenience with Phases 8-10**:
+6. ✅ Phase 6: Insights (learn from data) — **DONE**
+7. ✅ Phase 7: LLM export (AI analysis) — **DONE**
 8. Phase 8: Universal data ingestion (CSV/JSON + adapters)
+
+**Optional upgrades (Phases 9-10)**:
 9. Phase 9: Cloud backup (data safety)
 10. Phase 10: Optional automated connectors (high-frequency sources)
 
@@ -878,8 +882,8 @@ life-tracking/
 - Phase 3: ~~Component rendering, theme toggle, responsive layout~~ ✅
 - Phase 4: ~~Form rendering, validation, submission, edit/delete~~ ✅
 - Phase 5: ~~Chart rendering, metric display, time range filtering~~ ✅ (236 tests)
-- Phase 6: Aggregation math, trend detection, anomaly flagging
-- Phase 7: Export format generation, clipboard copy, template rendering
+- Phase 6: ~~Aggregation math, trend detection, anomaly flagging~~ ✅
+- Phase 7: ~~Export format generation, clipboard copy, template rendering~~ ✅
 - Phase 8: CSV/JSON ingestion, adapter presets, mapping wizard, preview conflicts
 - Phase 9: OAuth flow (mocked), backup/restore round-trip, sync status
 - Phase 10: Connector lifecycle, optional scheduling, retry isolation, fallback behavior
@@ -932,21 +936,21 @@ life-tracking/
 
 Each phase can be implemented in a single session with Claude Opus, with testing and iteration:
 
-- **Phase 1**: ~~1 session (~30-45 min) - Project scaffolding, PWA config~~ ✅ DONE
-- **Phase 2**: ~~1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing~~ ✅ DONE
-- **Phase 3**: ~~1 session (~30-45 min) - Layout components, theme system~~ ✅ DONE
-- **Phase 4**: ~~2-3 sessions (~90-120 min) - All 7 forms with validation~~ ✅ DONE
-- **Phase 5**: ~~2 sessions (~60-90 min) - Chart integration, multiple chart types~~ ✅ DONE
-- **Phase 6**: 1-2 sessions (~45-60 min) - Aggregation logic, insights UI
-- **Phase 7**: 1 session (~30-45 min) - Export utilities, templates
-- **Phase 8**: 1-2 sessions (~45-60 min) - Universal parser, adapter registry, mapping wizard
-- **Phase 9**: 1-2 sessions (~45-60 min) - Google OAuth, backup/restore
-- **Phase 10**: 1-2 sessions per connector (~45-60 min) - optional connector plugins and scheduling
+- **Phase 1**: ~~1 session - Project scaffolding, PWA config~~ ✅ DONE
+- **Phase 2**: ~~1 session - Encryption setup, DB schema, testing~~ ✅ DONE
+- **Phase 3**: ~~1 session - Layout components, theme system~~ ✅ DONE
+- **Phase 4**: ~~1 session - All 7 forms with validation~~ ✅ DONE
+- **Phase 5**: ~~1 session - Chart integration, multiple chart types~~ ✅ DONE
+- **Phase 6**: ~~1 session - Aggregation logic, insights UI~~ ✅ DONE
+- **Phase 7**: ~~1 session - Export utilities, templates~~ ✅ DONE
+- **Phase 8**: 1 session - Universal parser, adapter registry, mapping wizard
+- **Phase 9** (optional): 1 session - Google OAuth, backup/restore
+- **Phase 10** (optional): 1 session - optional connector plugins and scheduling
 
-**Total MVP (Phases 1-7)**: ~9-13 sessions (~8-12 hours total)
-**Full version (Phases 1-10)**: ~13-20 sessions (~13-20 hours total)
+**Total MVP (Phases 1-8)**: ~8 sessions
+**Optional upgrades (Phases 9-10)**: ~2 sessions
 
-**Recommended approach**: Implement phases sequentially, test each thoroughly before moving to next. Can complete MVP in 2-3 focused days, full version in 3-5 days.
+**Recommended approach**: Implement phases sequentially, test each thoroughly before moving to next.
 
 ---
 
@@ -957,8 +961,8 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 ✅ **Phase 3**: UI is responsive and accessible — **DONE**
 ✅ **Phase 4**: Can log data for all 7 domains — **DONE**
 ✅ **Phase 5**: Can visualize trends with charts — **DONE**
-- **Phase 6**: Insights surface meaningful patterns
-- **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude)
+✅ **Phase 6**: Insights surface meaningful patterns — **DONE**
+✅ **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude) — **DONE**
 - **Phase 8**: Universal import supports CSV/JSON, adapters, and conflict-safe commits
 - **Phase 9**: Backup/restore via Google Drive works
 - **Phase 10**: Optional connectors can sync data without being required
