@@ -26,19 +26,14 @@ The integration of these metrics facilitates third-order insights, such as under
 
 The technical requirements for a personal dashboard emphasize ease of maintenance, long-term stability, and high performance on both mobile and desktop browsers. A web-based PWA architecture using a modern JavaScript compiler or framework is the optimal solution for these needs.
 
-### Framework Comparison and Selection
+### Selected Technology Stack
 
-For a single-user application where the developer's time is the primary constraint, the selection of a framework focuses on reducing boilerplate and ensuring a clear code structure.
+The application is built using **Vue 3 with Vite**, chosen for its balance of performance, maintainability, and ease of use.
 
-| Feature | React (with Vite) | Vue 3 (with Vite) | Svelte / SvelteKit |
-|---------|------------------|-------------------|-------------------|
-| **Architecture** | Virtual DOM | Virtual DOM / Proxy-based | Build-time Compiler |
-| **Reactivity** | Hooks API | Composition API | Runes / Native JS |
-| **Bundle Size** | Larger (Runtime library) | Small | Ultra-Small (No runtime) |
-| **Learning Curve** | Moderate | Gentle (Progressive) | Minimal (HTML-centric) |
-| **Maintenance** | Ecosystem-heavy | Highly organized | Very low boilerplate |
-
-Vue 3 is particularly suited for dashboards because its Options API or Composition API provides a predictable structure for organizing data logic and UI components, making the codebase easier to return to after months of inactivity. Svelte is a compelling alternative for those prioritizing raw speed and an exceptionally small footprint, as it eliminates the Virtual DOM entirely, compiling code into efficient, imperative JavaScript.
+- **Framework**: Vue 3 (Composition API)
+- **Build Tool**: Vite
+- **State Management**: Pinia
+- **PWA Support**: vite-plugin-pwa
 
 ### Progressive Web App (PWA) Implementation
 
@@ -63,7 +58,7 @@ The application requires a multi-layered storage approach to balance the need fo
 | **Document DB** | IndexedDB | GBs (Disk space) | Historical logs, metrics, files |
 | **File System** | OPFS | GBs (Disk space) | Large binary data, future SQLite databases |
 
-IndexedDB is the primary choice for life tracking as it allows for structured JSON documents, asynchronous operations (ensuring the UI remains responsive), and large capacity (up to 80% of disk space in some browsers). To simplify the complex IndexedDB API, wrapper libraries like Dexie.js or RxDB are recommended for their ease of use and support for reactive queries.
+IndexedDB is the primary choice for life tracking as it allows for structured JSON documents, asynchronous operations (ensuring the UI remains responsive), and large capacity (up to 80% of disk space in some browsers). To simplify the complex IndexedDB API, the application uses **Dexie.js**, which provides a robust wrapper for IndexedDB with support for strong typing and reactive queries.
 
 ### Security and Encryption at Rest
 
@@ -89,47 +84,47 @@ As a web application built in collaboration with AI, the Productivity Hub likely
 - **Manual Entry Fields:** Daily tasks planned vs. completed, perceived focus rating (1-5), and time spent in "Deep Work".
 - **Insight Opportunity:** Correlating productivity ratings with the previous night's sleep quality from Fitbit.
 
-### Finance: Monarch Money
+### Finance: Transaction Aggregators (e.g., Monarch Money)
 
-Monarch Money is a robust financial tracker, but it lacks a formal developer-facing public API. The proposed app will rely on unofficial wrappers or manual data summaries.
+Tools like Monarch Money are robust financial trackers, but often lack formal public APIs. The system supports any financial tracker that exports transaction data.
 
 - **Data Structure:** Transactions, account balances, and budget categories.
 - **Manual Entry Strategy:** Weekly entry of total assets, liabilities, and category-specific spending (e.g., "Food & Dining," "Travel").
 - **Recommendation:** Use the "one number" budget philosophy—tracking how much flexible spending remains in a given period.
 
-### Physical Health: Fitbit
+### Physical Health: Wearable Trackers (e.g., Fitbit)
 
-Fitbit devices capture continuous physiological data, which provides the foundation for the health coaching aspect of the app.
+Wearable devices capture continuous physiological data. The system is designed to ingest summaries from any major provider (Fitbit, Apple Health, Garmin).
 
 - **Key Metrics:** Resting Heart Rate (RHR), Heart Rate Variability (HRV), Sleep Stages (REM, Deep, Core), and Active Zone Minutes.
 - **Manual Entry Path:** Until the Web API is integrated, the user can log daily summaries from the Fitbit app dashboard.
-- **Future API:** Fitbit's Web API uses OAuth 2.0 and provides "Intraday" data for more granular 1-minute or 5-minute time series.
+- **Future API:** Optional integration with specific Web APIs (like Fitbit) or aggregators (Health Connect).
 
-### Metabolic Health: Zoe Food Tracking
+### Metabolic Health: Nutrition & CGM (e.g., Zoe)
 
-Zoe utilizes gut microbiome testing and continuous glucose monitoring (CGM) to provide personalized nutrition scores.
+Platforms like Zoe utilize gut microbiome testing and continuous glucose monitoring (CGM) to provide personalized nutrition scores.
 
 - **Core Data:** Gut Microbiome Score (0-1000), personalized food scores (for specific meals), and blood fat/glucose response levels.
 - **Manual Entry Fields:** Daily average food score, specific "bad bug" clusters identified, and fiber intake.
 - **Strategic Insight:** Tracking the "Processed Food Risk Scale" score daily can help identify energy dips related to high-processing food intake.
 
-### Digital Wellbeing: Android Screen Time
+### Digital Wellbeing: Screen Time Trackers (e.g., Android)
 
-Android's Digital Wellbeing features help monitor and limit phone usage. Third-party access to this data is restricted by privacy policies, making manual entry necessary.
+Operating system features like Android's Digital Wellbeing or iOS Screen Time help monitor and limit phone usage.
 
 - **Metrics to Track:** Total screen time (hh:mm), number of device unlocks, and top three distracting apps used.
 - **Manual Entry Strategy:** Weekly summary of app timer hits and focus mode utilization.
 
-### Mindfulness: Art of Living Journey
+### Mindfulness: Meditation Apps (e.g., Art of Living)
 
-The Art of Living Journey app focuses on breathwork (Sudarshan Kriya) and guided meditations.
+Apps focusing on breathwork (Sudarshan Kriya) and guided meditations.
 
 - **Tracking Parameters:** Meditation duration, session quality (1-5), and consistency streak.
 - **Manual Entry Fields:** Type of practice (SKY, Sahaj Samadhi), duration, and perceived calm post-practice.
 
-### Intellectual Growth: Amazon Kindle
+### Intellectual Growth: E-Readers (e.g., Kindle)
 
-Kindle reading habits provide insights into knowledge acquisition and cognitive engagement.
+Reading habits provide insights into knowledge acquisition and cognitive engagement.
 
 - **Highlight Management:** Highlights can be extracted via the My Clippings.txt file (for sideloaded documents) or the Amazon Cloud Notebook (for purchased books).
 - **Data Points:** Books finished, daily pages read, and number of high-quality highlights captured.
@@ -145,6 +140,26 @@ To fulfill the objective of a "holistic" tracker, several other categories are s
 | **Social** | Manual Log | Quality in-person interactions | Monitor social health as a factor in happiness |
 | **Supplementation** | Guava / Habit Tracker | Vitamins, pills, hydration | Track impact of supplements on health metrics |
 | **Biometric Mass** | Smart Scale (Withings) | Weight, body fat %, muscle mass | Long-term physical health stability |
+
+## Universal Data Ingestion Architecture
+
+To ensure the system remains "local-first" and resilient to API changes, the primary automation strategy relies on a **Universal Import Engine** rather than hardcoded API integrations. This allows users to ingest data from *any* external app (Monarch, Fitbit, Apple Health, Kindle, Banks) via standard CSV/JSON exports.
+
+### The Adapter Pattern
+To support varied apps without changing the core codebase, the system employs an Adapter Pattern:
+1.  **Internal Schema:** The fixed domain models (e.g., `HealthLog` with `resting_hr`).
+2.  **External Source:** The raw export file (e.g., `fitbit_export.csv` or `apple_health.xml`).
+3.  **The Adapter:** A translation layer that maps external columns/tags to internal fields.
+
+### The Mapping Wizard
+For data sources without a pre-built adapter, a UI-based **Mapping Wizard** allows users to define the relationship:
+- **Upload:** User drops a CSV.
+- **Map:** User selects which column corresponds to "Date", "Heart Rate", etc.
+- **Save Preset:** The mapping configuration is saved to LocalStorage for future imports.
+
+### Conflict Resolution & Preview
+- **Dry-Run:** Users validate data integrity and preview changes before committing to the database.
+- **Strategies:** `skip` (keep existing), `replace` (overwrite), or `merge` (fill missing fields).
 
 ## Data Synthesis: Aggregation, Summaries, and Trends
 
@@ -185,16 +200,7 @@ Following established UX patterns ensures the most important information is seen
 
 ### Charting and Visualization
 
-The choice of charting library depends on the complexity of the data and the desired visual polish.
-
-| Library | Strengths | Best Use Case |
-|---------|-----------|---------------|
-| **Chart.js** | Lightweight (11KB), beautiful defaults, responsive | Standard dashboards for mobile |
-| **ApexCharts** | Interactive, supports modern timelines and heatmaps | Complex timelines and multi-source trends |
-| **Highcharts** | Enterprise-grade, robust accessibility, Stock charting | Financial data and long-term trends |
-| **Recharts / Shadcn** | React-native look, easily extendable | High-end visual consistency in Vue/React |
-
-Timelines are essential for visualizing events like "When did I meditate?" across a day, while line graphs should show how heart rate or focus changed over that same period.
+The application utilizes **Chart.js** for data visualization. It was selected for its lightweight footprint (11KB), responsive design capabilities, and ability to handle the specific visualization needs of the dashboard (line charts for trends, bar charts for comparisons).
 
 ## LLM Integration: Exporting for Advanced Analysis
 
@@ -226,9 +232,9 @@ The user can feed this export into an LLM with specific prompts:
 - "Based on my Zoe food scores and Fitbit sleep stages, identify which dietary habits lead to better REM sleep."
 - "Looking at my Productivity Hub data and Screen Time, suggest a schedule change to reduce afternoon focus dips."
 
-## Future Roadmap: Google Drive and API Transition
+## Future Roadmap: Cloud Sync and Automation
 
-While starting with manual entry ensures immediate utility and habit formation, the architecture must plan for future automation.
+With the core foundation, manual entry system, and visualizations now complete, the roadmap focuses on data portability and automation.
 
 ### Google Drive Integration via appDataFolder
 
@@ -238,18 +244,18 @@ Integrating Google Drive provides a "best of both worlds" solution: cloud sync w
 - **Security:** This maintains the "single-user" privacy model while protecting data against phone loss.
 - **Mechanism:** The app can periodically export a JSON snapshot of the IndexedDB and upload it to Drive using the files.create or files.update methods.
 
-### Transitioning to API Automation
+### Optional: Automated Connectors
 
-As the user gains familiarity with the data, manual entry can be replaced by scheduled API fetches.
+While the Universal Import Engine handles bulk data, direct API connections can be added as optional plugins for high-frequency data sources where manual export is tedious.
 
-| Platform | Difficulty | Method | Data Granularity |
+| Category | Difficulty | Method | Data Granularity |
 |----------|-----------|--------|------------------|
-| **Fitbit** | Low | OAuth 2.0 Web API | High (Intraday) |
-| **Kindle** | Medium | Browser Extension / USB | Medium (Highlights) |
-| **Monarch** | High | Unofficial Wrappers | Medium (Transactions) |
-| **Android** | High | Accessibility Services (Partial) | High (Real-time) |
+| **Wearables (e.g., Fitbit)** | Low | OAuth 2.0 Web API | High (Intraday) |
+| **E-Readers (e.g., Kindle)** | Medium | Browser Extension / USB | Medium (Highlights) |
+| **Finance (e.g., Monarch)** | High | Unofficial Wrappers | Medium (Transactions) |
+| **OS Wellbeing (e.g., Android)** | High | Accessibility Services (Partial) | High (Real-time) |
 
-The app should use a "Data Mapping" logic that normalizes incoming API data into the existing manual-entry schema, ensuring that historical trends remain consistent.
+These connectors are treated as enhancements rather than requirements, ensuring the system remains functional even if third-party APIs change or are deprecated.
 
 ## Conclusions and Strategic Recommendations
 

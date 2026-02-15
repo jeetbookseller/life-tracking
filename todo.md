@@ -2,9 +2,9 @@
 
 ## Context
 
-This plan implements a local-first, offline-capable Progressive Web App (PWA) for holistic life tracking. The app will track productivity, finance, physical health, metabolic health, digital wellbeing, mindfulness, and intellectual growth. Starting with manual entry and client-side encryption, it will evolve to include automated data fetching, LLM-powered insights, and cloud backup.
+This plan implements a local-first, offline-capable Progressive Web App (PWA) for holistic life tracking. The app will track productivity, finance, physical health, metabolic health, digital wellbeing, mindfulness, and intellectual growth. Starting with manual entry and client-side encryption, it will evolve to include universal data ingestion, LLM-powered insights, cloud backup, and optional automated connectors.
 
-The implementation is broken into 9 phases, each deliverable and testable independently, allowing incremental development without overwhelming scope.
+The implementation is broken into 10 phases, each deliverable and testable independently, allowing incremental development without overwhelming scope.
 
 **Testing approach**: Every phase follows a TDD (Test-Driven Development) workflow — write tests first, confirm they fail (red), implement the feature, then confirm tests pass (green). The project uses **Vitest** for unit/integration tests and **@vue/test-utils** for component tests.
 
@@ -545,7 +545,87 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 
 ---
 
-## Phase 8: Google Drive Backup - Cloud Sync
+## Phase 8: Universal Data Ingestion - CSV/JSON + Adapters
+
+**Goal**: Ingest exports from any app using a universal import engine with adapter presets, a mapping wizard, and conflict-safe commits
+
+### Tasks:
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/utils/dataIngestion.test.ts` — test CSV/JSON parsing and normalization
+     - `src/__tests__/adapters/adapterRegistry.test.ts` — test adapter preset lookup and mapping behavior
+     - `src/__tests__/services/import.test.ts` — test dry-run and commit orchestration
+     - `src/__tests__/components/settings/MappingWizard.test.ts` — test upload/mapping/preview/confirm UI flow
+   - Key test cases:
+     - Parser accepts CSV with header row, quoted commas, and configurable delimiters
+     - Parser accepts JSON array/object export formats and normalizes to row records
+     - Format detection chooses CSV vs JSON correctly
+     - Adapter registry resolves known presets (e.g., Fitbit, Monarch) by selected source
+     - Mapping Wizard supports unknown source files with manual field mapping
+     - Mapping preset can be saved and reused for future imports
+     - Required-field validation flags missing fields per selected domain
+     - Numeric/date coercion reports row-level errors with field names
+     - Dry-run preview reports valid/invalid/conflict row counts
+     - Conflict policy `replace` overwrites matching existing entries
+     - Conflict policy `skip` preserves existing entries
+     - Conflict policy `merge` fills missing fields without clobbering populated values
+     - Commit only persists rows approved by preview + conflict policy
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
+1. **Implement universal ingestion parser**
+   - Build parser utility for CSV and JSON sources
+   - Normalize all source records into a canonical row model
+   - Surface parse diagnostics for malformed files
+
+2. **Create adapter registry with known source presets**
+   - Define adapter interface that maps external fields to internal schema fields
+   - Add preset adapters for common sources (Fitbit, Monarch) as examples
+   - Fallback to Mapping Wizard when no preset matches
+
+3. **Implement Mapping Wizard**
+   - File upload + source/domain selection
+   - UI to map external columns/tags to required domain fields
+   - Save mapping presets locally for reuse
+
+4. **Build validation and dry-run preview pipeline**
+   - Apply adapter or manual mapping to build domain payloads
+   - Validate mapped rows using existing domain validators
+   - Show preview summary: valid, invalid, conflicts, and row-level errors
+
+5. **Implement conflict resolution + commit flow**
+   - Provide user-selectable strategies: `replace`, `skip`, `merge`
+   - Apply selected strategy during commit transaction
+   - Commit only rows approved by dry-run step
+
+6. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
+### Verification:
+- Can import both CSV and JSON exports from external apps
+- Known-source presets auto-map fields with minimal user effort
+- Mapping Wizard supports unknown-source files without custom code
+- Invalid rows are surfaced before commit with actionable errors
+- Dry-run accurately reports valid/invalid/conflict counts
+- Replace/skip/merge behavior matches selected strategy
+- Imported rows are persisted only after explicit confirmation
+
+**Files to create**:
+- `src/__tests__/utils/dataIngestion.test.ts`
+- `src/__tests__/adapters/adapterRegistry.test.ts`
+- `src/__tests__/services/import.test.ts`
+- `src/__tests__/components/settings/MappingWizard.test.ts`
+- `src/utils/dataIngestion.ts` - CSV/JSON parsing and normalization helpers
+- `src/adapters/registry.ts` - adapter registration and lookup
+- `src/adapters/presets/fitbitAdapter.ts`
+- `src/adapters/presets/monarchAdapter.ts`
+- `src/services/import.ts` - dry-run + commit orchestration and conflict handling
+- `src/components/settings/MappingWizard.vue` - universal file mapping UI
+
+---
+
+## Phase 9: Google Drive Backup - Cloud Sync
 
 **Goal**: Implement encrypted cloud backup via Google Drive
 
@@ -623,89 +703,67 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 
 ---
 
-## Phase 9: API Integration - Automated Data Fetching
+## Phase 10: Automated Connectors (Optional)
 
-**Goal**: Replace manual entry with automated API fetching where possible
+**Goal**: Add optional direct connectors for high-frequency sources without making third-party APIs a core requirement
 
 ### Tasks:
 0. **Write test cases & confirm they fail (red phase)**
    - Create test files:
-     - `src/__tests__/services/fitbit.test.ts` — test Fitbit API client (mocked)
-     - `src/__tests__/services/dataSync.test.ts` — test unified sync orchestrator
-     - `src/__tests__/utils/apiMappers.test.ts` — test API-to-schema transformers
-     - `src/__tests__/stores/apiAuth.test.ts` — test API authentication state
-     - `src/__tests__/components/settings/ApiConnections.test.ts` — test API settings UI
+     - `src/__tests__/services/connectors.test.ts` — test connector plugin interface and lifecycle
+     - `src/__tests__/services/connectorScheduler.test.ts` — test optional scheduled sync orchestration
+     - `src/__tests__/stores/connectorsAuth.test.ts` — test connector auth/token state
+     - `src/__tests__/components/settings/ConnectorSettings.test.ts` — test connector settings UI
    - Key test cases:
-     - Fitbit OAuth flow initiates correctly
-     - Fitbit API response maps to internal health_logs schema
-     - API mapper handles missing/null fields gracefully
-     - API mapper rejects malformed API responses
-     - Data sync merges API data with existing manual entries
-     - Manual entries take priority over API data for same date
-     - Scheduled fetch triggers at configured interval
-     - Retry logic retries failed fetches with backoff
-     - Rate limit handling pauses fetches when limit hit
-     - ApiConnections shows connect/disconnect buttons per API
-     - ApiConnections shows last sync time per API
-     - Disconnecting API removes stored tokens
+     - Connectors can be enabled/disabled independently
+     - Connector auth flow starts and disconnect removes stored credentials
+     - Connector payloads pass through shared adapter/mapping normalization
+     - Connector failures do not block manual entry or universal import workflows
+     - Scheduled fetch retries transient failures with backoff
+     - Rate-limit handling pauses/resumes connector jobs
+     - ConnectorSettings shows connection status and last sync time
    - Run `npx vitest run` and confirm all new tests **FAIL**
 
-1. **Implement Fitbit API integration**
-   - Set up Fitbit OAuth 2.0 flow
-   - Fetch daily summaries (HR, HRV, sleep, steps)
-   - Fetch intraday time series (optional)
-   - Map API response to data schema
-   - Store API tokens securely
+1. **Implement connector plugin framework**
+   - Define connector interface (`authorize`, `fetch`, `normalize`, `disconnect`)
+   - Register connectors as optional modules
+   - Reuse ingestion mapping pipeline where possible
 
-2. **Implement data normalization**
-   - Create data mappers for each API
-   - Convert API formats to internal schema
-   - Handle missing data gracefully
-   - Merge manual entries with API data
+2. **Add initial optional connectors**
+   - Prioritize aggregator-style/mobile-friendly connectors (Health Connect, Apple Health bridge)
+   - Keep direct web APIs (e.g., Fitbit) as optional plugin implementations
+   - Preserve manual and file-ingestion-first workflow as default
 
-3. **Build API settings UI**
-   - Connect/disconnect API integrations
-   - View last sync time
-   - Manual refresh trigger
-   - Data source priority (manual vs API)
+3. **Build connector settings UI**
+   - Connect/disconnect optional connectors
+   - View last sync status and last fetch timestamp
+   - Manual refresh trigger per connector
 
-4. **Add scheduled fetching**
-   - Daily auto-fetch at configured time
-   - Retry logic for failed fetches
-   - Background sync using service worker
-   - Rate limit handling
+4. **Add optional background scheduling**
+   - Configurable fetch intervals for enabled connectors
+   - Retry/backoff and rate-limit handling
+   - Graceful degradation when connectors are unavailable
 
-5. **Implement selective automation**
-   - Allow user to choose which domains to automate
-   - Keep manual entry option for all domains
-   - Show data source in UI (manual vs automated)
-
-6. **Future API integrations (roadmap)**
-   - Kindle highlights (via browser extension or email parsing)
-   - Monarch Money (unofficial API wrapper)
-   - Android Digital Wellbeing (via ADB bridge - advanced)
-
-7. **Verify all tests pass (green phase)**
+5. **Verify all tests pass (green phase)**
    - Run `npx vitest run` and confirm all new tests **PASS**
    - Run `npx vue-tsc -b` for type checking
    - Run `npx vite build` for production build
 
 ### Verification:
-- Can authenticate with Fitbit
-- Daily data fetches automatically
-- Manual entries still work and take priority
-- API errors don't break the app
-- Can disconnect APIs and revert to manual entry
+- App remains fully functional with connectors disabled
+- Enabled connectors can sync and normalize data without breaking existing logs
+- Connector failures are isolated and surfaced clearly in settings
+- Users can disconnect any connector and fall back to file ingestion/manual entry
 
 **Files to create**:
-- `src/__tests__/services/fitbit.test.ts`, `src/__tests__/services/dataSync.test.ts`
-- `src/__tests__/utils/apiMappers.test.ts`, `src/__tests__/stores/apiAuth.test.ts`
-- `src/__tests__/components/settings/ApiConnections.test.ts`
-- `src/services/fitbit.ts` - Fitbit API client
-- `src/services/dataSync.ts` - unified sync orchestrator
-- `src/utils/apiMappers.ts` - API-to-schema transformers
-- `src/components/settings/ApiConnections.vue`
-- `src/stores/apiAuth.ts` - API authentication state
+- `src/__tests__/services/connectors.test.ts`
+- `src/__tests__/services/connectorScheduler.test.ts`
+- `src/__tests__/stores/connectorsAuth.test.ts`
+- `src/__tests__/components/settings/ConnectorSettings.test.ts`
+- `src/services/connectors.ts` - connector plugin registry and execution
+- `src/services/connectorScheduler.ts` - optional sync scheduler
+- `src/stores/connectorsAuth.ts` - connector auth/token state
+- `src/components/settings/ConnectorSettings.vue`
 
 ---
 
@@ -722,9 +780,10 @@ The implementation is broken into 9 phases, each deliverable and testable indepe
 6. Phase 6: Insights (learn from data)
 7. Phase 7: LLM export (AI analysis)
 
-**Finally, add convenience with Phases 8-9**:
-8. Phase 8: Cloud backup (data safety)
-9. Phase 9: API automation (reduce manual work)
+**Finally, add convenience with Phases 8-10**:
+8. Phase 8: Universal data ingestion (CSV/JSON + adapters)
+9. Phase 9: Cloud backup (data safety)
+10. Phase 10: Optional automated connectors (high-frequency sources)
 
 ---
 
@@ -761,21 +820,25 @@ life-tracking/
 │   │   ├── storage.ts
 │   │   ├── insights.ts
 │   │   ├── sync.ts
-│   │   └── apiAuth.ts
+│   │   └── connectorsAuth.ts
 │   ├── db/
 │   │   └── schema.ts
 │   ├── services/
 │   │   ├── googleDrive.ts
-│   │   ├── fitbit.ts
 │   │   ├── backup.ts
-│   │   └── dataSync.ts
+│   │   ├── import.ts
+│   │   ├── connectors.ts
+│   │   └── connectorScheduler.ts
+│   ├── adapters/
+│   │   ├── registry.ts
+│   │   └── presets/
 │   ├── utils/
 │   │   ├── crypto.ts
 │   │   ├── aggregation.ts
 │   │   ├── trends.ts
 │   │   ├── export.ts
 │   │   ├── chartConfig.ts
-│   │   └── apiMappers.ts
+│   │   └── dataIngestion.ts
 │   ├── types/
 │   │   └── data-models.ts
 │   ├── styles/
@@ -784,6 +847,7 @@ life-tracking/
 │   └── __tests__/
 │       ├── crypto.test.ts
 │       ├── db-schema.test.ts
+│       ├── adapters/
 │       ├── stores/
 │       ├── components/
 │       ├── views/
@@ -816,15 +880,17 @@ life-tracking/
 - Phase 5: ~~Chart rendering, metric display, time range filtering~~ ✅ (236 tests)
 - Phase 6: Aggregation math, trend detection, anomaly flagging
 - Phase 7: Export format generation, clipboard copy, template rendering
-- Phase 8: OAuth flow (mocked), backup/restore round-trip, sync status
-- Phase 9: API mapping, data merge priority, scheduled fetch, retry logic
+- Phase 8: CSV/JSON ingestion, adapter presets, mapping wizard, preview conflicts
+- Phase 9: OAuth flow (mocked), backup/restore round-trip, sync status
+- Phase 10: Connector lifecycle, optional scheduling, retry isolation, fallback behavior
 
 **End-to-End Testing**:
 1. Fresh install → Set password → Enter week of data
 2. View dashboard → Identify trends → Export to LLM
 3. Close browser → Reopen → Verify data persists
 4. Backup to Drive → Clear browser data → Restore from Drive
-5. Connect Fitbit API → Verify automated sync
+5. Import external CSV/JSON → Verify mapping + conflict-safe commit
+6. (Optional) Enable connector → Verify sync without breaking manual/import flows
 
 ---
 
@@ -834,7 +900,7 @@ life-tracking/
 - **Encryption at rest**: All IndexedDB data encrypted with AES-GCM
 - **No server**: All data stays local or in user's Google Drive
 - **HTTPS only**: PWA requires secure context
-- **API tokens**: Stored encrypted with same master key
+- **Connector tokens (optional)**: Stored encrypted with same master key
 - **No analytics**: Complete privacy, no telemetry
 
 ---
@@ -873,11 +939,12 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 - **Phase 5**: ~~2 sessions (~60-90 min) - Chart integration, multiple chart types~~ ✅ DONE
 - **Phase 6**: 1-2 sessions (~45-60 min) - Aggregation logic, insights UI
 - **Phase 7**: 1 session (~30-45 min) - Export utilities, templates
-- **Phase 8**: 1-2 sessions (~45-60 min) - Google OAuth, backup/restore
-- **Phase 9**: 2-3 sessions per API (~60-90 min) - API integration, data mapping
+- **Phase 8**: 1-2 sessions (~45-60 min) - Universal parser, adapter registry, mapping wizard
+- **Phase 9**: 1-2 sessions (~45-60 min) - Google OAuth, backup/restore
+- **Phase 10**: 1-2 sessions per connector (~45-60 min) - optional connector plugins and scheduling
 
 **Total MVP (Phases 1-7)**: ~9-13 sessions (~8-12 hours total)
-**Full version (Phases 1-9)**: ~12-18 sessions (~12-18 hours total)
+**Full version (Phases 1-10)**: ~13-20 sessions (~13-20 hours total)
 
 **Recommended approach**: Implement phases sequentially, test each thoroughly before moving to next. Can complete MVP in 2-3 focused days, full version in 3-5 days.
 
@@ -892,7 +959,8 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 ✅ **Phase 5**: Can visualize trends with charts — **DONE**
 - **Phase 6**: Insights surface meaningful patterns
 - **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude)
-- **Phase 8**: Backup/restore via Google Drive works
-- **Phase 9**: Fitbit data syncs automatically
+- **Phase 8**: Universal import supports CSV/JSON, adapters, and conflict-safe commits
+- **Phase 9**: Backup/restore via Google Drive works
+- **Phase 10**: Optional connectors can sync data without being required
 
 **Project Success**: Daily use for 30+ days, actionable insights discovered, habits improved based on data
