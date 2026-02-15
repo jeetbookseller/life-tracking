@@ -779,13 +779,13 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 3. ✅ Phase 3: UI foundation (looks good) — **DONE**
 4. ✅ Phase 4: Manual entry (can track life) — **DONE**
 
-**Then add value with Phases 5-7**:
+**Then add value with Phases 5-8**:
 5. ✅ Phase 5: Visualizations (see trends) — **DONE**
 6. ✅ Phase 6: Insights (learn from data) — **DONE**
 7. ✅ Phase 7: LLM export (AI analysis) — **DONE**
-
-**Finally, add convenience with Phases 8-10**:
 8. Phase 8: Universal data ingestion (CSV/JSON + adapters)
+
+**Optional upgrades (Phases 9-10)**:
 9. Phase 9: Cloud backup (data safety)
 10. Phase 10: Optional automated connectors (high-frequency sources)
 
@@ -936,21 +936,21 @@ life-tracking/
 
 Each phase can be implemented in a single session with Claude Opus, with testing and iteration:
 
-- **Phase 1**: ~~1 session (~30-45 min) - Project scaffolding, PWA config~~ ✅ DONE
-- **Phase 2**: ~~1-2 sessions (~45-60 min) - Encryption setup, DB schema, testing~~ ✅ DONE
-- **Phase 3**: ~~1 session (~30-45 min) - Layout components, theme system~~ ✅ DONE
-- **Phase 4**: ~~2-3 sessions (~90-120 min) - All 7 forms with validation~~ ✅ DONE
-- **Phase 5**: ~~2 sessions (~60-90 min) - Chart integration, multiple chart types~~ ✅ DONE
-- **Phase 6**: ~~1-2 sessions (~45-60 min) - Aggregation logic, insights UI~~ ✅ DONE
-- **Phase 7**: ~~1 session (~30-45 min) - Export utilities, templates~~ ✅ DONE
-- **Phase 8**: 1-2 sessions (~45-60 min) - Universal parser, adapter registry, mapping wizard
-- **Phase 9**: 1-2 sessions (~45-60 min) - Google OAuth, backup/restore
-- **Phase 10**: 1-2 sessions per connector (~45-60 min) - optional connector plugins and scheduling
+- **Phase 1**: ~~1 session - Project scaffolding, PWA config~~ ✅ DONE
+- **Phase 2**: ~~1 session - Encryption setup, DB schema, testing~~ ✅ DONE
+- **Phase 3**: ~~1 session - Layout components, theme system~~ ✅ DONE
+- **Phase 4**: ~~1 session - All 7 forms with validation~~ ✅ DONE
+- **Phase 5**: ~~1 session - Chart integration, multiple chart types~~ ✅ DONE
+- **Phase 6**: ~~1 session - Aggregation logic, insights UI~~ ✅ DONE
+- **Phase 7**: ~~1 session - Export utilities, templates~~ ✅ DONE
+- **Phase 8**: 1 session - Universal parser, adapter registry, mapping wizard
+- **Phase 9** (optional): 1 session - Google OAuth, backup/restore
+- **Phase 10** (optional): 1 session - optional connector plugins and scheduling
 
-**Total MVP (Phases 1-7)**: ~9-13 sessions (~8-12 hours total)
-**Full version (Phases 1-10)**: ~13-20 sessions (~13-20 hours total)
+**Total MVP (Phases 1-8)**: ~8 sessions
+**Optional upgrades (Phases 9-10)**: ~2 sessions
 
-**Recommended approach**: Implement phases sequentially, test each thoroughly before moving to next. Can complete MVP in 2-3 focused days, full version in 3-5 days.
+**Recommended approach**: Implement phases sequentially, test each thoroughly before moving to next.
 
 ---
 
