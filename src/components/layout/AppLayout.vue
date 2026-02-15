@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import AppHeader from './AppHeader.vue'
 import AppSidebar from './AppSidebar.vue'
 import AppBottomNav from './AppBottomNav.vue'
+import WelcomeModal from '@/components/onboarding/WelcomeModal.vue'
 import { useTheme } from '@/composables/useTheme'
 import { useAutoLock } from '@/composables/useAutoLock'
 import { useSettingsStore } from '@/stores/settings'
@@ -35,6 +36,7 @@ onMounted(() => {
       </main>
     </div>
     <AppBottomNav :nav-items="navItems" />
+    <WelcomeModal />
   </div>
 </template>
 
