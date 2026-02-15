@@ -549,83 +549,85 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 
 ---
 
-## Phase 8: Universal Data Ingestion - CSV/JSON + Adapters
+## Phase 8: Universal Data Ingestion - CSV/JSON + Adapters ✅
 
 **Goal**: Ingest exports from any app using a universal import engine with adapter presets, a mapping wizard, and conflict-safe commits
 
+**Status**: COMPLETED
+
 ### Tasks:
-0. **Write test cases & confirm they fail (red phase)**
-   - Create test files:
-     - `src/__tests__/utils/dataIngestion.test.ts` — test CSV/JSON parsing and normalization
-     - `src/__tests__/adapters/adapterRegistry.test.ts` — test adapter preset lookup and mapping behavior
-     - `src/__tests__/services/import.test.ts` — test dry-run and commit orchestration
-     - `src/__tests__/components/settings/MappingWizard.test.ts` — test upload/mapping/preview/confirm UI flow
-   - Key test cases:
-     - Parser accepts CSV with header row, quoted commas, and configurable delimiters
-     - Parser accepts JSON array/object export formats and normalizes to row records
-     - Format detection chooses CSV vs JSON correctly
-     - Adapter registry resolves known presets (e.g., Fitbit, Monarch) by selected source
-     - Mapping Wizard supports unknown source files with manual field mapping
-     - Mapping preset can be saved and reused for future imports
-     - Required-field validation flags missing fields per selected domain
-     - Numeric/date coercion reports row-level errors with field names
-     - Dry-run preview reports valid/invalid/conflict row counts
-     - Conflict policy `replace` overwrites matching existing entries
-     - Conflict policy `skip` preserves existing entries
-     - Conflict policy `merge` fills missing fields without clobbering populated values
-     - Commit only persists rows approved by preview + conflict policy
-   - Run `npx vitest run` and confirm all new tests **FAIL**
+0. ~~**Write test cases & confirm they fail (red phase)**~~
+   - ~~Create test files:~~
+     - ~~`src/__tests__/utils/dataIngestion.test.ts` — test CSV/JSON parsing and normalization~~
+     - ~~`src/__tests__/adapters/adapterRegistry.test.ts` — test adapter preset lookup and mapping behavior~~
+     - ~~`src/__tests__/services/import.test.ts` — test dry-run and commit orchestration~~
+     - ~~`src/__tests__/components/settings/MappingWizard.test.ts` — test upload/mapping/preview/confirm UI flow~~
+   - ~~Key test cases:~~
+     - ~~Parser accepts CSV with header row, quoted commas, and configurable delimiters~~
+     - ~~Parser accepts JSON array/object export formats and normalizes to row records~~
+     - ~~Format detection chooses CSV vs JSON correctly~~
+     - ~~Adapter registry resolves known presets (e.g., Fitbit, Monarch) by selected source~~
+     - ~~Mapping Wizard supports unknown source files with manual field mapping~~
+     - ~~Mapping preset can be saved and reused for future imports~~
+     - ~~Required-field validation flags missing fields per selected domain~~
+     - ~~Numeric/date coercion reports row-level errors with field names~~
+     - ~~Dry-run preview reports valid/invalid/conflict row counts~~
+     - ~~Conflict policy `replace` overwrites matching existing entries~~
+     - ~~Conflict policy `skip` preserves existing entries~~
+     - ~~Conflict policy `merge` fills missing fields without clobbering populated values~~
+     - ~~Commit only persists rows approved by preview + conflict policy~~
+   - ~~Run `npx vitest run` and confirm all new tests **FAIL**~~
 
-1. **Implement universal ingestion parser**
-   - Build parser utility for CSV and JSON sources
-   - Normalize all source records into a canonical row model
-   - Surface parse diagnostics for malformed files
+1. ~~**Implement universal ingestion parser**~~
+   - ~~Build parser utility for CSV and JSON sources~~
+   - ~~Normalize all source records into a canonical row model~~
+   - ~~Surface parse diagnostics for malformed files~~
 
-2. **Create adapter registry with known source presets**
-   - Define adapter interface that maps external fields to internal schema fields
-   - Add preset adapters for common sources (Fitbit, Monarch) as examples
-   - Fallback to Mapping Wizard when no preset matches
+2. ~~**Create adapter registry with known source presets**~~
+   - ~~Define adapter interface that maps external fields to internal schema fields~~
+   - ~~Add preset adapters for common sources (Fitbit, Monarch) as examples~~
+   - ~~Fallback to Mapping Wizard when no preset matches~~
 
-3. **Implement Mapping Wizard**
-   - File upload + source/domain selection
-   - UI to map external columns/tags to required domain fields
-   - Save mapping presets locally for reuse
+3. ~~**Implement Mapping Wizard**~~
+   - ~~File upload + source/domain selection~~
+   - ~~UI to map external columns/tags to required domain fields~~
+   - ~~Save mapping presets locally for reuse~~
 
-4. **Build validation and dry-run preview pipeline**
-   - Apply adapter or manual mapping to build domain payloads
-   - Validate mapped rows using existing domain validators
-   - Show preview summary: valid, invalid, conflicts, and row-level errors
+4. ~~**Build validation and dry-run preview pipeline**~~
+   - ~~Apply adapter or manual mapping to build domain payloads~~
+   - ~~Validate mapped rows using existing domain validators~~
+   - ~~Show preview summary: valid, invalid, conflicts, and row-level errors~~
 
-5. **Implement conflict resolution + commit flow**
-   - Provide user-selectable strategies: `replace`, `skip`, `merge`
-   - Apply selected strategy during commit transaction
-   - Commit only rows approved by dry-run step
+5. ~~**Implement conflict resolution + commit flow**~~
+   - ~~Provide user-selectable strategies: `replace`, `skip`, `merge`~~
+   - ~~Apply selected strategy during commit transaction~~
+   - ~~Commit only rows approved by dry-run step~~
 
-6. **Verify all tests pass (green phase)**
-   - Run `npx vitest run` and confirm all new tests **PASS**
-   - Run `npx vue-tsc -b` for type checking
-   - Run `npx vite build` for production build
+6. ~~**Verify all tests pass (green phase)**~~
+   - ~~Run `npx vitest run` and confirm all new tests **PASS** (404 tests)~~
+   - ~~Run `npx vue-tsc -b` for type checking~~
+   - ~~Run `npx vite build` for production build~~
 
-### Verification:
-- Can import both CSV and JSON exports from external apps
-- Known-source presets auto-map fields with minimal user effort
-- Mapping Wizard supports unknown-source files without custom code
-- Invalid rows are surfaced before commit with actionable errors
-- Dry-run accurately reports valid/invalid/conflict counts
-- Replace/skip/merge behavior matches selected strategy
-- Imported rows are persisted only after explicit confirmation
+### ~~Verification~~:
+- ~~Can import both CSV and JSON exports from external apps~~
+- ~~Known-source presets auto-map fields with minimal user effort~~
+- ~~Mapping Wizard supports unknown-source files without custom code~~
+- ~~Invalid rows are surfaced before commit with actionable errors~~
+- ~~Dry-run accurately reports valid/invalid/conflict counts~~
+- ~~Replace/skip/merge behavior matches selected strategy~~
+- ~~Imported rows are persisted only after explicit confirmation~~
 
-**Files to create**:
-- `src/__tests__/utils/dataIngestion.test.ts`
-- `src/__tests__/adapters/adapterRegistry.test.ts`
-- `src/__tests__/services/import.test.ts`
-- `src/__tests__/components/settings/MappingWizard.test.ts`
-- `src/utils/dataIngestion.ts` - CSV/JSON parsing and normalization helpers
-- `src/adapters/registry.ts` - adapter registration and lookup
-- `src/adapters/presets/fitbitAdapter.ts`
-- `src/adapters/presets/monarchAdapter.ts`
-- `src/services/import.ts` - dry-run + commit orchestration and conflict handling
-- `src/components/settings/MappingWizard.vue` - universal file mapping UI
+~~**Files created**~~:
+- ~~`src/__tests__/utils/dataIngestion.test.ts`~~
+- ~~`src/__tests__/adapters/adapterRegistry.test.ts`~~
+- ~~`src/__tests__/services/import.test.ts`~~
+- ~~`src/__tests__/components/settings/MappingWizard.test.ts`~~
+- ~~`src/utils/dataIngestion.ts` - CSV/JSON parsing and normalization helpers~~
+- ~~`src/adapters/registry.ts` - adapter registration and lookup~~
+- ~~`src/adapters/presets/fitbitAdapter.ts`~~
+- ~~`src/adapters/presets/monarchAdapter.ts`~~
+- ~~`src/services/import.ts` - dry-run + commit orchestration and conflict handling~~
+- ~~`src/components/settings/MappingWizard.vue` - universal file mapping UI~~
 
 ---
 
@@ -783,7 +785,7 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 5. ✅ Phase 5: Visualizations (see trends) — **DONE**
 6. ✅ Phase 6: Insights (learn from data) — **DONE**
 7. ✅ Phase 7: LLM export (AI analysis) — **DONE**
-8. Phase 8: Universal data ingestion (CSV/JSON + adapters)
+8. ✅ Phase 8: Universal data ingestion (CSV/JSON + adapters) — **DONE**
 
 **Optional upgrades (Phases 9-10)**:
 9. Phase 9: Cloud backup (data safety)
@@ -884,7 +886,7 @@ life-tracking/
 - Phase 5: ~~Chart rendering, metric display, time range filtering~~ ✅ (236 tests)
 - Phase 6: ~~Aggregation math, trend detection, anomaly flagging~~ ✅
 - Phase 7: ~~Export format generation, clipboard copy, template rendering~~ ✅
-- Phase 8: CSV/JSON ingestion, adapter presets, mapping wizard, preview conflicts
+- Phase 8: ~~CSV/JSON ingestion, adapter presets, mapping wizard, preview conflicts~~ ✅ (404 tests)
 - Phase 9: OAuth flow (mocked), backup/restore round-trip, sync status
 - Phase 10: Connector lifecycle, optional scheduling, retry isolation, fallback behavior
 
@@ -943,7 +945,7 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 - **Phase 5**: ~~1 session - Chart integration, multiple chart types~~ ✅ DONE
 - **Phase 6**: ~~1 session - Aggregation logic, insights UI~~ ✅ DONE
 - **Phase 7**: ~~1 session - Export utilities, templates~~ ✅ DONE
-- **Phase 8**: 1 session - Universal parser, adapter registry, mapping wizard
+- ~~**Phase 8**: 1 session - Universal parser, adapter registry, mapping wizard~~ ✅ DONE
 - **Phase 9** (optional): 1 session - Google OAuth, backup/restore
 - **Phase 10** (optional): 1 session - optional connector plugins and scheduling
 
@@ -963,7 +965,7 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 ✅ **Phase 5**: Can visualize trends with charts — **DONE**
 ✅ **Phase 6**: Insights surface meaningful patterns — **DONE**
 ✅ **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude) — **DONE**
-- **Phase 8**: Universal import supports CSV/JSON, adapters, and conflict-safe commits
+✅ **Phase 8**: Universal import supports CSV/JSON, adapters, and conflict-safe commits — **DONE**
 - **Phase 9**: Backup/restore via Google Drive works
 - **Phase 10**: Optional connectors can sync data without being required
 
