@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia } from 'pinia'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppBottomNav from '@/components/layout/AppBottomNav.vue'
@@ -151,7 +152,7 @@ describe('AppLayout', () => {
     await router.push('/dashboard')
     await router.isReady()
     const wrapper = mount(AppLayout, {
-      global: { plugins: [router] },
+      global: { plugins: [router, createPinia()] },
       slots: { default: '<div class="test-content">Hello</div>' },
     })
     expect(wrapper.find('.app-header').exists()).toBe(true)
@@ -165,7 +166,7 @@ describe('AppLayout', () => {
     await router.push('/dashboard')
     await router.isReady()
     const wrapper = mount(AppLayout, {
-      global: { plugins: [router] },
+      global: { plugins: [router, createPinia()] },
       slots: { default: '<div class="test-content">Hello World</div>' },
     })
     expect(wrapper.find('.test-content').text()).toBe('Hello World')
