@@ -1,60 +1,88 @@
 <script setup lang="ts">
-const domains = [
-  'Productivity',
-  'Finance',
-  'Health',
-  'Metabolic',
-  'Digital',
-  'Mindfulness',
-  'Reading',
-] as const
+import Card from '@/components/ui/Card.vue'
 
-const domainIcons: Record<string, string> = {
-  Productivity: '📋',
-  Finance: '💰',
-  Health: '❤️',
-  Metabolic: '🧬',
-  Digital: '📱',
-  Mindfulness: '🧘',
-  Reading: '📚',
-}
+const domains = [
+  { name: 'Productivity', icon: '📋', description: 'Tasks & focus sessions' },
+  { name: 'Finance', icon: '💰', description: 'Net worth & spending' },
+  { name: 'Health', icon: '❤️', description: 'HR, HRV & sleep' },
+  { name: 'Metabolic', icon: '🧬', description: 'Food scores & nutrition' },
+  { name: 'Digital', icon: '📱', description: 'Screen time & usage' },
+  { name: 'Mindfulness', icon: '🧘', description: 'Meditation & streaks' },
+  { name: 'Reading', icon: '📚', description: 'Books & highlights' },
+] as const
 </script>
 
 <template>
   <div class="view-container">
     <h1>Dashboard</h1>
     <p class="view-description">Your daily metrics at a glance.</p>
-    <div class="placeholder-grid">
-      <div v-for="domain in domains" :key="domain" class="placeholder-card">
-        <span class="placeholder-icon">{{ domainIcons[domain] }}</span>
-        <span class="placeholder-label">{{ domain }}</span>
-      </div>
+    <div class="dashboard-grid">
+      <Card v-for="domain in domains" :key="domain.name">
+        <div class="domain-card">
+          <span class="domain-icon">{{ domain.icon }}</span>
+          <div class="domain-info">
+            <span class="domain-name">{{ domain.name }}</span>
+            <span class="domain-description">{{ domain.description }}</span>
+          </div>
+          <span class="domain-value">--</span>
+        </div>
+      </Card>
     </div>
   </div>
 </template>
 
 <style scoped>
-.placeholder-grid {
+.dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
 }
 
-.placeholder-card {
+@media (min-width: 640px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.domain-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.domain-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.domain-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+  flex: 1;
+  min-width: 0;
 }
 
-.placeholder-icon {
-  font-size: 1.75rem;
+.domain-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.domain-description {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.domain-value {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text-secondary);
 }
 </style>
