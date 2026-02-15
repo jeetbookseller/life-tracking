@@ -631,9 +631,9 @@ The implementation is broken into 10 phases, each deliverable and testable indep
 
 ---
 
-## Phase 8.5: Settings Tab Implementation
+## Phase 9: Settings Tab Implementation
 
-**Goal**: Populate the empty Settings tab with functional sections for security, appearance, data management, goals configuration, and app info
+**Goal**: Populate the empty Settings tab with functional sections for security, appearance, data management, goals configuration, help content, and app info
 
 **Status**: NOT STARTED
 
@@ -645,8 +645,9 @@ Settings.vue (container — vertical stack of Card sections)
 ├── AppearanceSettings.vue     — theme toggle, font size
 ├── DataManagementSettings.vue — import, export, clear data, DB stats
 ├── GoalsSettings.vue          — CRUD for insight goals
+├── HelpSettings.vue           — tab explainers + import guides
 ├── AboutSettings.vue          — version, storage usage
-└── ComingSoonSettings.vue     — Phase 9/10 placeholders
+└── ComingSoonSettings.vue     — Phase 10/11 placeholders
 ```
 
 ### Tasks:
@@ -660,12 +661,13 @@ Settings.vue (container — vertical stack of Card sections)
      - `src/__tests__/components/settings/DataManagementSettings.test.ts` — test import/export/clear/stats
      - `src/__tests__/components/settings/GoalsSettings.test.ts` — test goal CRUD UI
      - `src/__tests__/components/settings/AboutSettings.test.ts` — test version and storage display
+     - `src/__tests__/components/settings/HelpSettings.test.ts` — test tab explainer and import guide content
      - `src/__tests__/utils/reEncrypt.test.ts` — test re-encryption on password change
      - `src/__tests__/composables/useAutoLock.test.ts` — test idle timer logic
    - Key test cases:
      - Settings store loads defaults when no localStorage entry exists
      - Settings store persists changes to localStorage
-     - Settings view renders all 6 section components
+     - Settings view renders all 7 section components
      - Change password modal validates current password, new password match, min length
      - Password change triggers re-encryption of all stored data
      - Theme toggle switches between light/dark and persists
@@ -677,6 +679,8 @@ Settings.vue (container — vertical stack of Card sections)
      - Goals list displays existing goals with delete buttons
      - Add goal form validates domain/metric/target
      - Auto-lock timer locks app after idle timeout
+     - Help section renders tab descriptions for all 5 tabs
+     - Help section renders import guides for Fitbit, Monarch, and manual mapping
    - Run `npx vitest run` and confirm all new tests **FAIL**
 
 1. **Create settings store and view skeleton**
@@ -685,7 +689,7 @@ Settings.vue (container — vertical stack of Card sections)
 
 2. **Build About and Coming Soon sections**
    - `src/components/settings/AboutSettings.vue` — App version, storage usage via `navigator.storage.estimate()`, tech stack
-   - `src/components/settings/ComingSoonSettings.vue` — Dashed-border placeholders for Phase 9 (Google Drive Backup) and Phase 10 (API Connectors)
+   - `src/components/settings/ComingSoonSettings.vue` — Dashed-border placeholders for Phase 10 (Google Drive Backup) and Phase 11 (API Connectors)
 
 3. **Build Appearance Settings**
    - `src/components/settings/AppearanceSettings.vue` — Theme toggle (light/dark), font size selector (small/medium/large)
@@ -706,11 +710,24 @@ Settings.vue (container — vertical stack of Card sections)
    - `src/components/settings/SecuritySettings.vue` — Change password modal, auto-lock timeout dropdown
    - `src/utils/reEncrypt.ts` — Re-encryption helper: decrypt all records with old key → encrypt with new key → write back (critical because `setPassword()` generates new salt/key)
 
-7. **Add auto-lock integration**
+7. **Build Help Section**
+   - `src/components/settings/HelpSettings.vue` — Two collapsible/accordion sections:
+   - **Section A — What Each Tab Does:**
+     - Dashboard: Your daily metrics at a glance — 7 metric cards with deltas, 8 charts, time range filtering
+     - Log Entry: Record daily data across 7 domains. "Copy from Yesterday" to speed up entry
+     - Insights: Discover trends — anomaly alerts, week-over-week comparisons, goal progress, correlations, personal bests, streaks
+     - Export: Export data in LLM-optimized formats (Markdown-KV, JSON, CSV) for AI analysis. Includes prompt library
+     - Settings: Configure security, appearance, goals, data management, and view help
+   - **Section B — How to Import Data from Apps:**
+     - *Fitbit (Health domain)*: Export from fitbit.com → upload CSV/JSON → select "Fitbit" preset → auto-mapped fields (resting HR, HRV, sleep, active minutes, steps) → preview & confirm
+     - *Monarch Money (Finance domain)*: Export from Monarch → upload CSV → select "Monarch Money" preset → auto-mapped fields (total assets, liabilities, net worth) → preview & confirm
+     - *Other Apps (Manual mapping)*: Export as CSV/JSON/TSV → select "Manual Mapping" → choose target domain → map columns to fields → set conflict policy (skip/replace/merge) → preview & confirm
+
+8. **Add auto-lock integration**
    - `src/composables/useAutoLock.ts` — Idle timer composable (listens for activity events, locks via `authStore.lock()` after timeout)
    - Integrate into `App.vue` or `AppLayout.vue`
 
-8. **Verify all tests pass (green phase)**
+9. **Verify all tests pass (green phase)**
    - Run `npx vitest run` and confirm all new tests **PASS**
    - Run `npx vue-tsc -b` for type checking
    - Run `npx vite build` for production build
@@ -724,6 +741,7 @@ Settings.vue (container — vertical stack of Card sections)
 - Can clear all data with confirmation safeguard
 - Goals configured in Settings appear in Insights tab
 - Auto-lock triggers after idle timeout
+- Help section displays accurate tab descriptions and import guides
 - App remains fully functional after all settings operations
 
 **Files to create**:
@@ -734,6 +752,7 @@ Settings.vue (container — vertical stack of Card sections)
 - `src/components/settings/DataManagementSettings.vue`, `src/__tests__/components/settings/DataManagementSettings.test.ts`
 - `src/components/settings/GoalsSettings.vue`, `src/__tests__/components/settings/GoalsSettings.test.ts`
 - `src/components/settings/AboutSettings.vue`, `src/__tests__/components/settings/AboutSettings.test.ts`
+- `src/components/settings/HelpSettings.vue`, `src/__tests__/components/settings/HelpSettings.test.ts`
 - `src/components/settings/ComingSoonSettings.vue`
 - `src/utils/reEncrypt.ts`, `src/__tests__/utils/reEncrypt.test.ts`
 - `src/composables/useAutoLock.ts`, `src/__tests__/composables/useAutoLock.test.ts`
@@ -745,7 +764,53 @@ Settings.vue (container — vertical stack of Card sections)
 
 ---
 
-## Phase 9: Google Drive Backup - Cloud Sync
+## Phase 9.5: Help & First-Start Explainer
+
+**Goal**: Add a first-start welcome modal so new users understand what the app does, and guide them through initial setup
+
+**Status**: NOT STARTED
+
+### Tasks:
+
+0. **Write test cases & confirm they fail (red phase)**
+   - Create test files:
+     - `src/__tests__/components/onboarding/WelcomeModal.test.ts` — test welcome modal display and dismissal
+   - Key test cases:
+     - Welcome modal shows on first visit (no `life-tracker-welcome-seen` in localStorage)
+     - Welcome modal does NOT show on subsequent visits
+     - Modal displays app description, tab overview, and "Get Started" button
+     - Clicking "Get Started" dismisses modal and persists `life-tracker-welcome-seen`
+   - Run `npx vitest run` and confirm all new tests **FAIL**
+
+1. **Build Welcome Modal**
+   - `src/components/onboarding/WelcomeModal.vue` — Shown once on first app open:
+     - **Title**: "Welcome to Life Tracker"
+     - **Description**: "A private, encrypted life-tracking app that runs entirely in your browser. Track productivity, finances, health, metabolic data, digital wellbeing, mindfulness, and reading — all stored locally with AES-256 encryption."
+     - **Quick tab overview**: Icon + one-liner for Dashboard, Log Entry, Insights, Export, Settings
+     - **Get Started button**: Dismisses modal, persists `life-tracker-welcome-seen` to localStorage
+   - Integrate into `App.vue` or `AppLayout.vue` — show when `!localStorage.getItem('life-tracker-welcome-seen')`
+
+2. **Verify all tests pass (green phase)**
+   - Run `npx vitest run` and confirm all new tests **PASS**
+   - Run `npx vue-tsc -b` for type checking
+   - Run `npx vite build` for production build
+
+### Verification:
+- First-time users see welcome modal explaining what the app does
+- Modal shows quick tab overview so users know where to go
+- Modal is dismissed and never shown again after clicking "Get Started"
+- Returning users are not interrupted by the modal
+
+**Files to create**:
+- `src/components/onboarding/WelcomeModal.vue`
+- `src/__tests__/components/onboarding/WelcomeModal.test.ts`
+
+**Files to modify**:
+- `src/App.vue` or `src/components/layout/AppLayout.vue` — show WelcomeModal on first visit
+
+---
+
+## Phase 10: Google Drive Backup - Cloud Sync
 
 **Goal**: Implement encrypted cloud backup via Google Drive
 
@@ -823,7 +888,7 @@ Settings.vue (container — vertical stack of Card sections)
 
 ---
 
-## Phase 10: Automated Connectors (Optional)
+## Phase 11: Automated Connectors (Optional)
 
 **Goal**: Add optional direct connectors for high-frequency sources without making third-party APIs a core requirement
 
@@ -901,10 +966,13 @@ Settings.vue (container — vertical stack of Card sections)
 7. ✅ Phase 7: LLM export (AI analysis) — **DONE**
 8. ✅ Phase 8: Universal data ingestion (CSV/JSON + adapters) — **DONE**
 
-**Next up — Settings & cloud upgrades (Phases 8.5-10)**:
-8.5. Phase 8.5: Settings tab (security, appearance, data management, goals, about)
-9. Phase 9: Cloud backup (data safety)
-10. Phase 10: Optional automated connectors (high-frequency sources)
+**Next up — Settings & help (Phases 9-9.5)**:
+9. Phase 9: Settings tab (security, appearance, data management, goals, help, about)
+9.5. Phase 9.5: First-start explainer & help system
+
+**Optional upgrades (Phases 10-11)**:
+10. Phase 10: Cloud backup (data safety)
+11. Phase 11: Optional automated connectors (high-frequency sources)
 
 ---
 
@@ -1002,8 +1070,10 @@ life-tracking/
 - Phase 6: ~~Aggregation math, trend detection, anomaly flagging~~ ✅
 - Phase 7: ~~Export format generation, clipboard copy, template rendering~~ ✅
 - Phase 8: ~~CSV/JSON ingestion, adapter presets, mapping wizard, preview conflicts~~ ✅ (404 tests)
-- Phase 9: OAuth flow (mocked), backup/restore round-trip, sync status
-- Phase 10: Connector lifecycle, optional scheduling, retry isolation, fallback behavior
+- Phase 9: Settings store, section components, re-encryption, auto-lock, help content
+- Phase 9.5: Welcome modal display/dismissal, first-visit detection
+- Phase 10: OAuth flow (mocked), backup/restore round-trip, sync status
+- Phase 11: Connector lifecycle, optional scheduling, retry isolation, fallback behavior
 
 **End-to-End Testing**:
 1. Fresh install → Set password → Enter week of data
@@ -1061,8 +1131,10 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 - **Phase 6**: ~~1 session - Aggregation logic, insights UI~~ ✅ DONE
 - **Phase 7**: ~~1 session - Export utilities, templates~~ ✅ DONE
 - ~~**Phase 8**: 1 session - Universal parser, adapter registry, mapping wizard~~ ✅ DONE
-- **Phase 9** (optional): 1 session - Google OAuth, backup/restore
-- **Phase 10** (optional): 1 session - optional connector plugins and scheduling
+- **Phase 9**: 1 session - Settings tab (security, appearance, data management, goals, help, about)
+- **Phase 9.5**: 1 session - First-start welcome modal and explainers
+- **Phase 10** (optional): 1 session - Google OAuth, backup/restore
+- **Phase 11** (optional): 1 session - optional connector plugins and scheduling
 
 **Total MVP (Phases 1-8)**: ~8 sessions
 **Optional upgrades (Phases 9-10)**: ~2 sessions
@@ -1081,7 +1153,9 @@ Each phase can be implemented in a single session with Claude Opus, with testing
 ✅ **Phase 6**: Insights surface meaningful patterns — **DONE**
 ✅ **Phase 7**: Export works with LLMs (tested with ChatGPT/Claude) — **DONE**
 ✅ **Phase 8**: Universal import supports CSV/JSON, adapters, and conflict-safe commits — **DONE**
-- **Phase 9**: Backup/restore via Google Drive works
-- **Phase 10**: Optional connectors can sync data without being required
+- **Phase 9**: Settings tab fully functional with all sections
+- **Phase 9.5**: First-start welcome modal shown to new users
+- **Phase 10**: Backup/restore via Google Drive works
+- **Phase 11**: Optional connectors can sync data without being required
 
 **Project Success**: Daily use for 30+ days, actionable insights discovered, habits improved based on data
